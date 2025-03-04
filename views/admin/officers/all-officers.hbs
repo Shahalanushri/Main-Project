@@ -1,0 +1,92 @@
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Manage Officers</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                <li class="breadcrumb-item">Officers</li>
+                <li class="breadcrumb-item active">All-Officers</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <h5 class="card-title">All Officers</h5>
+                            {{!-- <a href="/admin/officers/add-officer" class="btn btn-dark">+ Add New Officer</a> --}}
+                        </div>
+
+                        {{#each users}}
+                        <div class="card shadow-md p-3">
+                            <h5><b>{{this.Fname}} {{this.Lname}}</b> ({{this.role}}) </h5>
+                            <ul>
+
+                                <li>
+                                    <b>Details :</b>
+                                    <ul>
+                                        <li>
+                                            {{this.Email}}
+                                        </li>
+                                        <li>
+                                            {{this.Phone}}
+                                        </li>
+
+                                    </ul>
+                                </li>
+                            </ul>
+
+                            <a href="/admin/set-role/{{this._id}}" class="btn mt-3 btn-dark btn-sm">Edit
+                                Role</a>
+                        </div>
+                        {{/each}}
+                        {{!-- <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th data-type="date" data-format="YYYY/DD/MM">Name</th>
+                                        <th>Phone</th>
+                                        <th>Role</th>
+                                        <th>Manage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each users}}
+                                    {{#if (or
+                                    (eq this.role "President")
+                                    (eq this.role "Treasurer")
+                                    (eq this.role "Secretary")
+                                    (eq this.role "Resource Manager")
+                                    (eq this.role "Maintenance Staff")
+                                    (eq this.role "Business Owner")
+                                    )}}
+                                    <tr>
+                                        <td>{{incremented @index}}</td>
+                                        <td>{{this.Fname}} {{this.Lname}}</td>
+                                        <td>{{this.Phone}}</td>
+                                        <td>{{this.role}}</td>
+                                        <td> <a href="/admin/set-role/{{this._id}}" class="btn btn-dark btn-sm">Edit
+                                                Role</a></td>
+
+                                    </tr>
+                                    {{/if}}
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div> --}}
+
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->

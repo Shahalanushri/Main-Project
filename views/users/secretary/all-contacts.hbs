@@ -1,0 +1,103 @@
+<style>
+    .bg-overlay::after {
+        position: absolute;
+        content: '';
+        background-color: #000000b5;
+        opacity: 0.75;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        z-index: -1;
+    }
+
+    .cu-btn {
+        border-radius: 100px !important;
+    }
+
+    .about-img {
+        border-radius: 20px;
+    }
+
+    .ct-btn {
+        font-size: 11px;
+        border-radius: 50px;
+    }
+
+    .tiny-slider-one-wrapper .single-hero-slide {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 200px !important;
+        background-position: center center;
+        background-size: cover;
+    }
+
+    .form-control.form-control-clicked {
+        background-color: hsl(0, 31%, 95%);
+        border-color: #c6c6c6;
+        color: #073984;
+    }
+</style>
+
+<div class="page-content-wrapper p-2 pt-4">
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <p>Manage Emergency Contacts</p>
+                <a href="/add-contact" class="btn btn-dark btn-sm mb-4">+ Add Emergency Contact</a>
+                <div class="table-responsive">
+
+                    <table class="w-100" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Contact Type</th>
+                                <th>Contact Info</th>
+                                <th>Manage</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each contacts}}
+                            <tr>
+                                <td>{{this.name}}</td>
+
+                                <td>{{this.type}}</td>
+                                <td>{{this.info}} </td>
+                                <td><a href="/delete-contact/{{this._id}}" class="btn btn-danger">Delete</a></td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput');
+        var filter = input.value.toUpperCase();
+        var list = document.getElementById("elementsSearchList");
+        var listItem = list.getElementsByClassName('col-4');
+
+        for (i = 0; i < listItem.length; i++) {
+            var a = listItem[i];
+            var textValue = a.textContent || a.innerText;
+            if (textValue.toUpperCase().indexOf(filter) > -1) {
+                listItem[i].style.display = "";
+            } else {
+                listItem[i].style.display = "none";
+            }
+        }
+    }
+
+</script>
+
+
+
+</div>

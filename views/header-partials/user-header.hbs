@@ -1,0 +1,192 @@
+<!-- Preloader -->
+<div id="preloader" class="bg-dark">
+    <div class="circle-loader">
+        <div class="circle-big"></div>
+    </div>
+</div>
+<!-- Internet Connection Status -->
+<!-- # This code for showing internet connection status -->
+<div class="internet-connection-status" id="internetStatus"></div>
+<!-- Header Area -->
+<div class="header-area bg-smart" id="headerArea">
+    <div class="container-lg">
+        <div
+            class="header-content header-style-five position-relative d-flex align-items-center justify-content-between">
+            <!-- Logo Wrapper -->
+            <div class="logo-wrapper">
+
+                <h5 class="mt-2 text-white">SmartConnect</h5>
+            </div>
+
+            <!-- Centered Navigation Links -->
+            <ul class="d-none d-md-flex gap-4 nav-ul mx-auto">
+                <li class="nav-links">
+                    <a href="/home">Home</a>
+                </li>
+                <li class="nav-links">
+                    <a href="/about">About Us</a>
+                </li>
+                <li class="nav-links">
+                    <a href="/service">Our Services</a>
+                </li>
+                <li class="nav-links">
+                    <a href="/contact">Contact Us</a>
+                </li>
+            </ul>
+
+            <!-- Login and Signup Buttons with Navbar Toggler -->
+            <div class="d-flex align-items-center gap-2">
+                {{#if user}}
+                <a href="/orders" class="btn btn2 btn-sm btn-outline-dark d-none d-md-inline-block">Your Bookings</a>
+                <a href="/profile" class="btn btn2 btn-sm btn-dark d-none d-md-inline-block">Hi, {{user.Fname}}
+                    {{user.Lname}}</a>
+                {{else}}
+                <a href="/usertype" class="btn btn2 btn-sm btn-dark d-none d-md-inline-block">Login</a>
+                <a href="/usertype" class="btn btn2 btn-sm btn-outline-dark d-none d-md-inline-block">Signup</a>
+                {{/if}}
+                <div class="navbar--toggler" id="affanNavbarToggler" data-bs-toggle="offcanvas"
+                    data-bs-target="#affanOffcanvas" aria-controls="affanOffcanvas">
+                    <span class="d-block"></span>
+                    <span class="d-block"></span>
+                    <span class="d-block"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-ul {
+        margin-right: auto;
+        /* Align nav links to center */
+    }
+
+    @media only screen and (max-width: 600px) {
+        .nav-ul {
+            display: none;
+        }
+    }
+
+
+
+    .nav-links a {
+        font-size: 12px;
+        color: black;
+    }
+
+    .btn2 {
+        padding: 10px 30px;
+    }
+
+    .header-content.header-style-five .navbar--toggler {
+        border: 0px solid #ebebeb;
+        padding: 5px;
+        border-radius: 4px;
+    }
+</style>
+
+<!-- # Sidenav Left -->
+<!-- Offcanvas -->
+<div class="offcanvas offcanvas-start" id="affanOffcanvas" data-bs-scroll="true" tabindex="-1"
+    aria-labelledby="affanOffcanvsLabel">
+    <button class="btn-close btn-close-white text-reset" type="button" data-bs-dismiss="offcanvas"
+        aria-label="Close"></button>
+    <div class="offcanvas-body p-0">
+        <!-- Side Nav Wrapper -->
+        <div class="sidenav-wrapper">
+            <!-- Sidenav Profile -->
+            <div class="sidenav-profile bg-gradient">
+                <div class="sidenav-style1"></div>
+                <!-- User Thumbnail -->
+                <div class="user-profile"><img src="img/bg-img/2.jpg" alt=""></div>
+                <!-- User Info -->
+                {{#if user}}
+                <div class="user-info">
+                    <h6 class="user-name mb-0">Hi, {{user.Fname}} {{user.Lname}}</h6><span>{{user.Email}}</span>
+                </div>
+                {{else}}
+                <div class="user-info">
+                    <h6 class="user-name mb-0 ">SmartConnect</h6><span>www.smartconect.com</span>
+                </div>
+                {{/if}}
+            </div>
+            <!-- Sidenav Nav -->
+
+            <ul class="sidenav-nav ps-0">
+                {{#if user}}
+                {{!-- <li><a href="/"><i class="bi bi-house-door"></i>Home</a></li>
+                <li><a href="/about"><i class="bi bi-people"></i>About Us</a></li>
+                <li><a href="/service"><i class="bi bi-layers"></i>Our Services</a></li>
+                <li><a href="/contact"><i class="bi bi-telephone"></i>Contact Us</a></li> --}}
+                <li>
+                    <div class="night-mode-nav"><i class="bi bi-moon"></i>Night Mode
+                        <div class="form-check form-switch">
+                            <input class="form-check-input form-check-success" id="darkSwitch" type="checkbox">
+                        </div>
+                    </div>
+                </li>
+                <li><a href="/home"><i class="bi bi-house"></i>Home</a></li>
+
+                <li>
+                    {{#if (eq user.role "President")}}
+                    <a href="/president"><i class="bi bi-people"></i> Got to president hub</a>
+                    {{else if (eq user.role "Treasurer")}}
+                    <a href="/treasurer"><i class="bi bi-gear"></i> Got to treasurer hub</a>
+                    {{else if (eq user.role "Secretary")}}
+                    <a href="/secretary"><i class="bi bi-gear"></i> Got to secretary hub</a>
+                    {{else if (eq user.role "Resource Manager")}}
+                    <a href="/Resource-Manager"><i class="bi bi-gear"></i> Got to Resource Manager hub</a>
+
+                    {{/if}}
+                </li>
+
+
+                <li><a href="/profile"><i class="bi bi-gear"></i>My Profile</a></li>
+                <li><a href="/notifications"><i class="bi bi-bell"></i>Notifications</a></li>
+                <li><a href="/signout"><i class="bi bi-box-arrow-right"></i>Logout</a></li>
+                {{!-- <li><a href="/profile"><i class="bi bi-gear text-white"></i>My Profile</a></li> --}}
+                {{!-- <li><a href="/notifications"><i class="bi bi-bell text-white"></i>Notifications</a></li>
+                <li><a href="/signout"><i class="bi bi-box-arrow-right text-white"></i>Logout</a></li>
+                <li><a href="/profile"><i class="bi bi-gear text-white"></i>My Profile</a></li>
+                <li><a href="/notifications"><i class="bi bi-bell text-white"></i>Notifications</a></li>
+                <li><a href="/signout"><i class="bi bi-box-arrow-right text-white"></i>Logout</a></li> --}}
+                {{!-- <li><a href="/profile"><i class="bi bi-gear text-white"></i>My Profile</a></li>
+                <li><a href="/notifications"><i class="bi bi-bell text-white"></i>Notifications</a></li>
+                <li><a href="/signout"><i class="bi bi-box-arrow-right text-white"></i>Logout</a></li> --}}
+                {{!-- <li><a href="#"><i class="bi bi-cart-check"></i>Shop</a>
+                    <ul>
+                        <li><a href="page-shop-grid.html">Shop Grid</a></li>
+                        <li><a href="page-shop-list.html">Shop List</a></li>
+                        <li><a href="page-shop-details.html">Shop Details</a></li>
+                        <li><a href="page-cart.html">Cart</a></li>
+                        <li><a href="page-checkout.html">Checkout</a></li>
+                    </ul>
+                </li> --}}
+
+                {{else}}
+                {{!-- <li><a href="/"><i class="bi bi-house-door"></i>Home</a></li>
+                <li><a href="/about"><i class="bi bi-people"></i>About Us</a></li>
+                <li><a href="/service"><i class="bi bi-layers"></i>Our Services</a></li>
+                <li><a href="/contact"><i class="bi bi-telephone"></i>Contact Us</a></li> --}}
+                <li>
+                    <div class="night-mode-nav"><i class="bi bi-moon"></i>Night Mode
+                        <div class="form-check form-switch">
+                            <input class="form-check-input form-check-success" id="darkSwitch" type="checkbox">
+                        </div>
+                    </div>
+                </li>
+                <li><a href="/usertype"><i class="bi bi-person-circle"></i>Signin/Signup</a></li>
+
+                {{/if}}
+
+            </ul>
+            <!-- Social Info -->
+            {{!-- <div class="social-info-wrap"><a href="#"><i class="bi bi-facebook"></i></a><a href="#"><i
+                        class="bi bi-twitter"></i></a><a href="#"><i class="bi bi-linkedin"></i></a></div>
+            <!-- Copyright Info -->
+            <div class="copyright-info">
+                <p>2021 &copy; Made by<a href="#">Designing World</a></p>
+            </div> --}}
+        </div>
+    </div>
+</div>

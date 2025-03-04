@@ -1,0 +1,165 @@
+<style>
+    label {
+        font-size: 13px;
+        margin-bottom: 10px;
+    }
+</style>
+<!-- Login Wrapper Area -->
+<div class="login-wrapper d-flex  align-items-center justify-content-center bg-warning">
+    <div class="container-lg">
+        <div class="text-center px-4"><img class="login-intro-img" src="assets/img/bg-img/36.png" alt=""></div>
+        <br><br><br>
+        <!-- Register Form -->
+
+        <div class="d-flex gap-2    ">
+            {{!-- <a href="/home" class="btn btn-sm btn-dark">
+                <i class="bi bi-arrow-left-short "></i> Back</a> --}}
+            {{#if user}}
+            <a href="/edit-profile/{{user._id}}" class="btn btn-sm btn-primary">
+
+                <i class="bi bi-pen "></i> Edit Profile</a>
+            <button data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="btn btn-sm btn-dark">
+                <i class="bi bi-plus "></i> Add Family Member</button>
+
+
+            {{/if}}
+        </div>
+
+        <div class="card shadow p-4 mt-3 bg-warning">
+
+            <div class="register-form mt-4">
+                <h4 class="mb-5 text-left text-white">My Profile</h4>
+                {{#if user}}
+                <form action="#!" method="">
+                    <div class="row g-1">
+                        <div class="col-lg-6">
+                            <div class="form-group" style="color: white">
+                                <label>First Name</label>
+                                <input class="form-control" type="text" name="Fname" value={{user.Fname}} readonly>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group" style="color: white">
+                                <label>Last Name</label>
+                                <input class="form-control" type="text" name="Lname" value={{user.Lname}} readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group" style="color: white">
+                        <label>Email</label>
+
+                        <input class="form-control" type="email" name="Email" value={{user.Email}} readonly>
+                    </div>
+                    <div class="form-group" style="color: white">
+                        <label>Phone Number</label>
+
+                        <input class="form-control" type="number" name="Phone" value={{user.Phone}} readonly>
+                    </div>
+                    <div class="form-group" style="color: white">
+                        <label>Address</label>
+
+                        <textarea class="form-control" name="Address" readonly>{{user.Address}} </textarea>
+                    </div>
+                    <div class="row g-1">
+                        <div class="col-lg-7">
+                            <div class="form-group" style="color: white">
+                                <label>City</label>
+
+                                <input class="form-control" type="text" name="District" value={{user.District}}
+                                    readonly>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="form-group" style="color: white">
+                                <label>Pincode</label>
+
+                                <input class="form-control" type="number" name="Pincode" value={{user.Pincode}}
+                                    readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <h4>My Family</h4>
+
+                    {{#if familyMembers.length}}
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Relation</th>
+                                <th>Age</th>
+                                <th>Number</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each familyMembers}}
+                            <tr>
+                                <td>{{this.mname}}</td>
+                                <td>{{this.relation}}</td>
+                                <td>{{this.mage}}</td>
+                                <td>{{this.mphone}}</td>
+
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                    {{else}}
+                    <p>No family members added yet.</p>
+                    {{/if}}
+                </form>
+                {{/if}}
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="modal-title" id="staticBackdropLabel">Add Family Member</h6>
+                <button class="btn btn-close p-1 ms-auto" type="button" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form action="/add-family" method="post">
+                    <div class="form-group mt-2">
+                        <label>Member Name</label>
+                        <input class="form-control" type="text" name="mname" required>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Member Age</label>
+                        <input class="form-control" type="text" name="mage" required>
+                    </div>
+                    <div class="form-group mt-2">
+                        <label>Member Phone Number</label>
+                        <input class="form-control" type="text" name="mphone">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="defaultSelect">select relation</label>
+                        <select class="form-select form-control-clicked" id="defaultSelect" name="relation"
+                            aria-label="Default select example">
+                            <option value="" selected="" disabled>Select relation</option>
+                            <option value="Husband">Husband</option>
+                            <option value="Wife">Wife</option>
+                            <option value="Son">Son</option>
+                            <option value="Daughter">Daughter</option>
+                            <option value="Relative">Relative</option>
+                            <option value="Other">Other</option>
+
+
+                        </select>
+                    </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-sm btn-secondary" type="button" data-bs-dismiss="modal">Close</button>
+                <button class="btn btn-sm btn-success" type="submit">Add</button>
+            </div>
+            </form>
+        </div>
+    </div>
+</div>

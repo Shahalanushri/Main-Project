@@ -1,0 +1,72 @@
+{
+  "name": "Smart Connect",
+  "short_name": "Smart Connect",
+  "start_url": "http://192.168.1.66:4000",
+  "display": "fullscreen",
+  "background_color": "#0d5afd",
+  "theme_color": "#0d5afd",
+  "categories": ["mobile", "multipurpose", "blog", "ecommerce", "pwa"],
+  "orientation": "portrait",
+  "description": "Smart Connect - connect the residence",
+  "icons": [{
+      "src": "../imges/img/communityphoto.png",
+      "type": "image/png",
+      "sizes": "72x72",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../imges/img/communityphoto.png",
+      "type": "image/png",
+      "sizes": "96x96",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../imges/img/communityphoto.png",
+      "type": "image/png",
+      "sizes": "128x128",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../imges/img/communityphoto.png",
+      "type": "image/png",
+      "sizes": "144x144",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../imges/img/communityphoto.png",
+      "type": "image/png",
+      "sizes": "152x152",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../imges/img/communityphoto.png",
+      "type": "image/png",
+      "sizes": "167x167",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../imges/img/communityphoto.png",
+      "type": "image/png",
+      "sizes": "180x180",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../imges/img/communityphoto.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../imges/img/communityphoto.png",
+      "type": "image/png",
+      "sizes": "384x384",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "../imges/img/communityphoto.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "any maskable"
+    }
+  ]
+}

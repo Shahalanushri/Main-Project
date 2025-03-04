@@ -1,0 +1,21 @@
+<style>
+    .page-content-wrapper {
+        height: 100vh;
+    }
+</style>
+
+<div class="page-content-wrapper mt-0 py-3 bg-warning">
+    <div class="custom-container">
+        <div class="card" style="background-color: #E4A11B;">
+            <div class="card-body px-5 text-center"><img class="mb-4" src="img/bg-img/39.png" alt="">
+                <h4 class="mb-4 text-center" style="color: white"> OOPS... <br> We found that you are buy the
+                    subscription!</h4>
+                <p class="mb-4 text-white">You should complete your profile and subscription to continue with this app.
+                </p>
+                {{#if user}}
+                <a class="btn btn-creative btn-light" href="/continue/{{user._id}}">Subscribe</a>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>

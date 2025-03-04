@@ -1,0 +1,81 @@
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Manage Builders</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Dashboard</a></li>
+                <li class="breadcrumb-item">Builder</li>
+                <li class="breadcrumb-item active">All-Builder</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">All Builders</h5>
+                        <div class="table-responsive">
+                            <table class="table datatable">
+                                <thead>
+                                    <tr>
+                                        <th>No.</th>
+                                        <th data-type="date" data-format="YYYY/DD/MM">Joined Date</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Address</th>
+                                        <th>City</th>
+                                        <th>Manage</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each builders}}
+                                    <tr>
+                                        <td>{{incremented @index}}</td>
+                                        <td>{{this.date}}</td>
+                                        <td>{{this.Companyname}}</td>
+                                        <td>{{this.Email}}</td>
+                                        <td>{{this.Phone}}</td>
+                                        <td>{{this.Address}}</td>
+                                        <td>{{this.City}}</td>
+                                        <td>
+                                            <div class="d-flex gap-2">
+                                                {{#if this.approved}}
+                                                <span class="badge bg-success p-2">Approved</span>
+                                                {{else if this.rejected}}
+                                                <span class="badge bg-danger p-2">Rejected</span>
+                                                {{else}}
+                                                <form action="/admin/approve-builder/{{this._id}}" method="POST">
+                                                    <button type="submit" class="btn btn-success btn-sm"><i
+                                                            class="bi bi-check2"></i></button>
+                                                </form>
+                                                <form action="/admin/reject-builder/{{this._id}}" method="POST">
+                                                    <button type="submit" class="btn btn-dark btn-sm"><i
+                                                            class="bi bi-ban"></i></button>
+                                                </form>
+                                                {{/if}}
+                                                <form action="/admin/delete-builder/{{this._id}}" method="POST">
+                                                    <button type="submit" class="btn btn-danger btn-sm"><i
+                                                            class="bi bi-trash"></i></button>
+                                                </form>
+                                            </div>
+                                        </td>
+
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </section>
+
+</main><!-- End #main -->

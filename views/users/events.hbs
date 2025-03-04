@@ -1,0 +1,83 @@
+<div class="page-content-wrapper p-5">
+
+    <div class="container-lg">
+        {{!-- <h4>All Upcomming Events</h4> --}}
+        <hr>
+        <div class="row">
+            {{#each events}}
+            <div class="col-lg-4 mb-3">
+                <div class="card position-relative shadow-sm"><img class="card-img-top"
+                        src="/images/event-images/{{this._id}}.png" alt=""><span
+                        class="badge bg-warning text-dark position-absolute card-badge">{{this.date}}</span>
+                    <div class="card-body direction-rtl">
+                        <h2>{{this.title}}</h2>
+                        <p>{{this.desc}}</p>
+                        <p class="mb-0"><b>Venue :</b> {{this.venue}}</p>
+                        <p class="mb-0"><b>Time :</b> {{this.from}} - {{this.to}}</p>
+                        <p class="mb-2"><b>Available Seats :</b> {{this.seat}}</p>
+                        <button class="btn btn-success mb-3"><b>Ticket Price :</b> Rs.{{this.Price}}/-</button> <br>
+
+                        <button class="btn btn-dark buy-now" data-id="{{this._id}}" data-seats="{{this.seat}}">Book
+                            Now</button>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+
+        </div>
+
+    </div>
+</div>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const buyNowButtons = document.querySelectorAll('.buy-now');
+
+        buyNowButtons.forEach(button => {
+            const seatsAvailable = parseInt(button.getAttribute('data-seats'), 10);
+
+            if (seatsAvailable === 0) {
+                button.disabled = true; // Disable the button if sold out
+                button.textContent = 'Sold Out'; // Change the button text
+                button.classList.add('disabled'); // Optionally add a disabled class for styling
+            } else {
+                button.addEventListener('click', function () {
+                    buyNow(button.getAttribute('data-id')); // Call the buyNow function
+                });
+            }
+        });
+    });
+
+    function buyNow(eventId) {
+        // Your buy now logic here, for example:
+        alert('Buying event with ID: ' + eventId);
+        // Implement your purchase logic (e.g., make an API call)
+    }
+</script>
+
+<script>
+    function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput');
+        var filter = input.value.toUpperCase();
+        var list = document.getElementById("elementsSearchList");
+        var listItem = list.getElementsByClassName('col-6');
+
+        for (i = 0; i < listItem.length; i++) {
+            var a = listItem[i];
+            var textValue = a.textContent || a.innerText;
+            if (textValue.toUpperCase().indexOf(filter) > -1) {
+                listItem[i].style.display = "";
+            } else {
+                listItem[i].style.display = "none";
+            }
+        }
+    }
+
+</script>
+<script>
+    function buyNow(eventId) {
+        window.location.href = '/place-order/' + eventId;
+    }
+
+</script>

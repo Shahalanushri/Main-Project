@@ -1,0 +1,45 @@
+<div class="page-content-wrapper main-content mt-5 pt-5">
+    <div class="container-md">
+        <div class="d-flex align-items-center">
+            <a href="/officer">
+                <i class="bi bi-arrow-left h5 me-4" style="color: black; width:30px;"></i>
+            </a>
+            <h6 class="mt-2 mb-3">Manage Payments</h6>
+        </div>
+
+        <div class="row g-3">
+            {{#each users}}
+            <div class="col-12 col-sm-12 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <h4>{{this.Fname}} {{this.Lname}}</h4>
+                        <p class="mt-0 mb-0">Email : {{this.Email}}</p>
+                        <p class="mt-0 mb-2">Address : {{this.Address}}</p>
+                        <h6 class="">User Status : <span id="payment-method">{{this.userStatus}}</span></h6>
+                        <h6 class="">Amount : <span id="payment-method">{{this.amount}}/-</span></h6>
+
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+
+        </div>
+
+    </div>
+</div>
+
+<script>
+    const paymentStatusElement = document.getElementById('payment-method');
+
+    if (paymentStatusElement) {
+        const status = paymentStatusElement.textContent.trim();
+
+        if (status === 'verified') {
+            paymentStatusElement.textContent = 'Cash Paid';
+            paymentStatusElement.style.color = 'green'; // Set text color to green
+        } else if (status === 'unpaid') {
+            paymentStatusElement.textContent = 'Cash Not Paid';
+            paymentStatusElement.style.color = 'red'; // Set text color to red
+        }
+    }
+</script>

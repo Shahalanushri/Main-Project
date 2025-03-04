@@ -1,0 +1,200 @@
+<div class="page-content-wrapper p-5">
+
+    <div class="container-lg">
+        {{!-- <h4>All Upcomming Events</h4> --}}
+        <hr>
+        <div class="row">
+            {{#each facilities}}
+            <div class="col-lg-4 mb-3">
+                <div class="card position-relative shadow-sm"><img class="card-img-top"
+                        src="/images/facilitie-images/{{this._id}}.png" alt=""><span
+                        class="badge bg-warning text-dark position-absolute card-badge">{{this.date}}</span>
+                    <div class="card-body direction-rtl">
+                        <h2>{{this.title}}</h2>
+                        <p>{{this.desc}}</p>
+                        <p class="mb-2"><b>Available :</b> {{this.availability}}</p>
+                        <button class="btn btn-success mb-3"><b>Price :</b> Rs.{{this.Price}}/-</button> <br>
+
+                        <button class="btn btn-dark view-details" data-bs-toggle="modal" data-bs-target="#bookNowModal"
+                            data-title={{this.title}} data-desc="{{this.desc}}" data-seats={{this.availability}}
+                            data-price="{{this.Price}}">
+                            Book Now
+                        </button>
+
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+
+        </div>
+
+    </div>
+</div>
+
+
+
+<!-- Bootstrap Modal -->
+<div class="modal fade" id="bookNowModal" tabindex="-1" aria-labelledby="bookNowModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="bookingForm" action="/book-now" method="POST">
+                <div class="modal-header">
+                    {{#if user}}
+                    <input type="hidden" name="userId" value="{{user._id}}">
+                    <input type="hidden" name="username" value="{{user.Fname}}">
+                    <input type="hidden" name="useremail" value="{{user.Email}}">
+                    <input type="hidden" name="userphone" value="{{user.Phone}}">
+                    <input type="hidden" name="useraddress" value="{{user.Address}}">
+                    {{/if}}
+
+                    <h5 class="modal-title" id="modalTitle"> Event Title</h5>
+                    <input type="hidden" name="title" id="hiddenTitle">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Details:</h6>
+                    <p id="modalDesc" class="mb-1">Event Description</p>
+                    <input type="hidden" name="desc" id="hiddenDesc">
+
+                    <p class="mb-1"><b>Available :</b> <span id="modalSeats"></span></p>
+                    <input type="hidden" name="seats" id="hiddenSeats">
+
+                    <p class="mb-1"><b>Price:</b> Rs. <span id="modalPrice"></span>/-</p>
+                    <input type="hidden" name="price" id="hiddenPrice">
+
+                    <hr>
+                    <div class="form-group">
+                        <label class="mb-2">Quantity</label>
+                        <input class="form-control" type="number" name="count" required placeholder="Enter Quantity">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="mb-2">Date</label>
+                        <input class="form-control" type="date" name="date" required>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const bookNowButtons = document.querySelectorAll(".view-details");
+
+        bookNowButtons.forEach(button => {
+            const seats = parseInt(button.getAttribute("data-seats")); // Convert to integer
+
+            if (seats === 0) {
+                button.textContent = "Not Available"; // Change button text
+                button.classList.add("btn-danger"); // Optional: Change color to red
+                button.disabled = true; // Disable the button
+            }
+
+            button.addEventListener("click", function () {
+                if (seats > 0) {
+                    // Get event data from button attributes
+                    const title = this.getAttribute("data-title");
+                    const desc = this.getAttribute("data-desc");
+                    const price = this.getAttribute("data-price");
+
+                    // Populate modal with event details
+                    document.getElementById("modalTitle").textContent = title;
+                    document.getElementById("modalDesc").textContent = desc;
+                    document.getElementById("modalSeats").textContent = seats;
+                    document.getElementById("modalPrice").textContent = price;
+
+                    // Set form hidden inputs
+                    document.getElementById("hiddenTitle").value = title;
+                    document.getElementById("hiddenDesc").value = desc;
+                    document.getElementById("hiddenSeats").value = seats;
+                    document.getElementById("hiddenPrice").value = price;
+
+                    // Store available seats for validation
+                    document.getElementById("bookingForm").setAttribute("data-max-seats", seats);
+                }
+            });
+        });
+
+        // Validate count before form submission
+        document.getElementById("bookingForm").addEventListener("submit", function (event) {
+            const maxSeats = parseInt(this.getAttribute("data-max-seats"));
+            const countInput = this.querySelector("input[name='count']");
+            const enteredCount = parseInt(countInput.value);
+
+            if (enteredCount > maxSeats) {
+                alert(`Only ${maxSeats} seats are available. Please enter a valid quantity.`);
+                event.preventDefault();
+            } else if (enteredCount <= 0) {
+                alert("Please enter a valid quantity greater than 0.");
+                event.preventDefault();
+            }
+        });
+    });
+
+
+</script>
+
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const buyNowButtons = document.querySelectorAll('.buy-now');
+
+        buyNowButtons.forEach(button => {
+            const seatsAvailable = parseInt(button.getAttribute('data-seats'), 10);
+
+            if (seatsAvailable === 0) {
+                button.disabled = true; // Disable the button if sold out
+                button.textContent = 'Sold Out'; // Change the button text
+                button.classList.add('disabled'); // Optionally add a disabled class for styling
+            } else {
+                button.addEventListener('click', function () {
+                    buyNow(button.getAttribute('data-id')); // Call the buyNow function
+                });
+            }
+        });
+    });
+
+    function buyNow(eventId) {
+        // Your buy now logic here, for example:
+        alert('Buying event with ID: ' + eventId);
+        // Implement your purchase logic (e.g., make an API call)
+    }
+</script>
+
+<script>
+    function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput');
+        var filter = input.value.toUpperCase();
+        var list = document.getElementById("elementsSearchList");
+        var listItem = list.getElementsByClassName('col-6');
+
+        for (i = 0; i < listItem.length; i++) {
+            var a = listItem[i];
+            var textValue = a.textContent || a.innerText;
+            if (textValue.toUpperCase().indexOf(filter) > -1) {
+                listItem[i].style.display = "";
+            } else {
+                listItem[i].style.display = "none";
+            }
+        }
+    }
+
+</script>
+<script>
+    function buyNow(eventId) {
+        window.location.href = '/place-order/' + eventId;
+    }
+
+</script>

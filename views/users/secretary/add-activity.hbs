@@ -1,0 +1,68 @@
+<div class="page-content-wrapper p-2 pt-5">
+
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h5>Set Announcements</h5> <br>
+                <form action="/add-activity" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Title</label>
+                        <input class="form-control" name="title" id="exampleInputText" type="text"
+                            placeholder="Enter The Title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleTextarea1">Note</label>
+                        <textarea class="form-control" id="exampleTextarea1" name="desc" cols="3" rows="5"
+                            placeholder="Write something..."></textarea>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="form-label" for="defaultSelect">Activity To</label>
+                        <select class="form-select" id="defaultSelect" name="to" aria-label="Default select example"
+                            required>
+                            <option value="" selected disabled>Select User</option>
+                            <option value="All Users">All Users</option>
+                            <option value="Residence">Residence</option>
+                            <option value="Treasurer">Treasurer</option>
+                            <option value="Secretary">Secretary
+                            </option>
+                            {{!-- <option value="Resource Manager">Resource Manager</option>
+                            <option value="Maintenance Staff">Maintenance Staff</option>
+                            <option value="Business Owner">Business Owner</option>
+                            <option value="Cleaner">Cleaner</option>
+                            <option value="Security">Security</option> --}}
+
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Date</label>
+                        <input class="form-control" name="date" id="exampleInputText" type="date"
+                            placeholder="Enter The Sub Title" required>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Picture</label>
+                        <input class="form-control" name="Image" id="exampleInputText" type="file"
+                            placeholder="Enter The Title" required>
+                    </div>
+
+
+
+
+                    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                        type="submit">Add Announcement
+                        <svg class="bi bi-arrow-right-short" width="24" height="24" viewBox="0 0 16 16"
+                            fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z">
+                            </path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,109 @@
+<style>
+    .page-content-wrapper {
+        height: 100vh;
+    }
+</style>
+<div class="page-content-wrapper mt-0 bg-warning">
+    <div class="container">
+        <!-- Element Heading -->
+        <div class="element-heading pt-5 mb-3">
+            <h3 class="mb-4 text-white">Registration Fee</h3>
+        </div>
+    </div>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <div class="single-plan-check shadow-sm active-effect">
+                    <div class="form-check mb-0">
+                        <input class="form-check-input" type="radio" checked name="planChoose" id="Silver Plan" />
+                        <label class="form-check-label" for="Silver Plan mb-4" style="color:#E4A11B ;">
+                            Silver Plan
+                        </label>
+                    </div>
+                    <h5 class="mt-2 mb-4 text-warning">Rs.500/-</h5>
+                </div>
+            </div>
+        </div>
+        <!-- Include userId as a hidden field -->
+        <input type="hidden" id="userId" value="{{user._id}}" />
+        <button class="btn btn-dark mt-3 btn-lg" id="pay-now-btn" data-amount="500">
+            Continue
+        </button>
+    </div>
+</div>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    document.getElementById('pay-now-btn').addEventListener('click', async () => {
+        const userId = document.getElementById('userId').value; // Get userId from the hidden field
+        const amount = document.getElementById('pay-now-btn').getAttribute('data-amount'); // Registration Fee amount
+
+        try {
+            // Step 1: Create an order on the server
+            const response = await fetch('/create-order', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, amount }), // Pass userId and amount to the server
+            });
+
+            const { success, order } = await response.json();
+
+            if (success) {
+                // Step 2: Configure Razorpay options
+                const options = {
+                    key: "rzp_test_8NokNgt8cA3Hdv", // Replace with your Razorpay Key ID
+                    amount: order.amount, // Amount in currency subunits (50000 = 500 INR)
+                    currency: "INR",
+                    name: "SmartConnect",
+                    description: "Registration Fee",
+                    image: "https://example.com/your_logo",
+                    order_id: order.id, // Razorpay order ID from the server
+                    handler: async function (paymentResponse) {
+                        // Payment Success Handler
+                        try {
+                            // Step 3: Send payment details to the server
+                            const verifyResponse = await fetch('/verify', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({
+                                    userId,
+                                    paymentId: paymentResponse.razorpay_payment_id,
+                                    orderId: paymentResponse.razorpay_order_id,
+                                    signature: paymentResponse.razorpay_signature,
+                                    amount, // Send the amount for confirmation
+                                }),
+                            });
+
+                            const verifyResult = await verifyResponse.json();
+
+                            if (verifyResult.success) {
+                                // Redirect to /home on successful verification
+                                window.location.href = '/pending-approval';
+                            } else {
+                                alert('Payment verification failed. Please contact support.');
+                            }
+                        } catch (error) {
+                            console.error('Error verifying payment:', error);
+                            alert('Something went wrong during payment verification. Please try again.');
+                        }
+                    },
+                    prefill: {
+                        name: 'shahala nushri', // Optionally set default values
+                        email: 'shahala@example.com',
+                        contact: '8156867466',
+                    },
+                };
+
+                // Open Razorpay Payment Interface
+                const razorpayInstance = new Razorpay(options);
+                razorpayInstance.open();
+            } else {
+                alert('Failed to create order. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('Something went wrong. Please try again.');
+        }
+    });
+</script>

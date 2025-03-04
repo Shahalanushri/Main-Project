@@ -1,0 +1,105 @@
+<style>
+    .custum-file-upload {
+        height: 200px;
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        align-items: space-between;
+        gap: 20px;
+        cursor: pointer;
+        align-items: center;
+        justify-content: center;
+        border: 2px dashed #cacaca;
+        background-color: rgba(255, 255, 255, 1);
+        padding: 1.5rem;
+        border-radius: 10px;
+        box-shadow: 0px 48px 35px -48px rgba(0, 0, 0, 0.1);
+    }
+
+    .custum-file-upload .icon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .custum-file-upload .icon svg {
+        height: 80px;
+        fill: rgba(75, 85, 99, 1);
+    }
+
+    .custum-file-upload .text {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .custum-file-upload .text span {
+        font-weight: 400;
+        color: rgba(75, 85, 99, 1);
+    }
+
+    .custum-file-upload input {
+        display: none;
+    }
+</style>
+
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Set Role to {{user.Fname}}</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/admin">Home</a></li>
+                <li class="breadcrumb-item">Users</li>
+                <li class="breadcrumb-item active">Set Role</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+    <section class="section">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        {{!-- <h5 class="card-title">Multi Columns Form</h5> --}}
+
+                        <!-- Multi Columns Form -->
+                        <form class="row g-3 mt-3" action="/admin/users/set-role/{{user._id}}" method="POST">
+                            <div class="col-md-12">
+                                <label for="inputName5" class="form-label">Name</label>
+                                <input type="text" class="form-control" name="name" id="inputName5"
+                                    value="{{user.Fname}}" readonly>
+                            </div>
+
+                            <div class="col-md-12">
+                                <label for="inputState" class="form-label">Select Role</label>
+                                <select id="inputState" name="role" class="form-select">
+                                    <option selected disabled>Choose...</option>
+                                    <option value="Residence">Residence</option>
+                                    <option value="Treasurer">Treasurer</option>
+                                    <option value="Secretary">Secretary
+                                    </option>
+                                    <option value="Resource Manager">Resource Manager</option>
+                                    <option value="Maintenance Staff">Maintenance Staff</option>
+                                    <option value="Business Owner">Business Owner</option>
+
+                                </select>
+                            </div>
+
+
+                    </div>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </section>
+    <div class="mb-4" style="float: inline-end;
+">
+        <button type="submit" class="btn btn-primary">Submit</button>
+        <button type="reset" class="btn btn-secondary">Reset</button>
+    </div>
+
+
+</main><!-- End #main -->

@@ -1,0 +1,90 @@
+<div class="page-content-wrapper p-2 pt-4">
+
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h5>Add New Event</h5> <br>
+                <form action="/add-event" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Event Title</label>
+                        <input class="form-control" name="title" id="exampleInputText" type="text"
+                            placeholder="Enter The Title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Sub Title</label>
+                        <input class="form-control" name="subtitle" id="exampleInputText" type="text"
+                            placeholder="Enter The Sub Title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Date</label>
+                        <input class="form-control" name="date" id="exampleInputText" type="date"
+                            placeholder="Enter The Sub Title" required>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Available Seats</label>
+                        <input class="form-control" name="seat" id="exampleInputText" type="number"
+                            placeholder="Enter Available Seats" required>
+                    </div>
+
+
+                    <div class="row">
+                        <p>Select Timing</p>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="exampleInputText">From</label>
+                                <input class="form-control" name="from" id="exampleInputText" type="time"
+                                    placeholder="Enter The Sub Title" required>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="form-group">
+                                <label class="form-label" for="exampleInputText">To</label>
+                                <input class="form-control" name="to" id="exampleInputText" type="time"
+                                    placeholder="Enter The Sub Title" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Venue</label>
+                        <input class="form-control" name="venue" id="exampleInputText" type="text"
+                            placeholder="Enter The Venue" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Ticket Price</label>
+                        <input class="form-control" name="Price" id="exampleInputText" type="text"
+                            placeholder="Enter The Ticket Price" required>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleTextarea1">Desc</label>
+                        <textarea class="form-control" id="exampleTextarea1" name="desc" cols="3" rows="5"
+                            placeholder="Write something..." required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="Image">Poster</label>
+                        <input class="form-control" name="Image" id="Image" type="file" required>
+                    </div>
+
+
+                    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                        type="submit">Add Event
+                        <svg class="bi bi-arrow-right-short" width="24" height="24" viewBox="0 0 16 16"
+                            fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z">
+                            </path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

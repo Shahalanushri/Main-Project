@@ -1,0 +1,108 @@
+<style>
+    .bg-overlay::after {
+        position: absolute;
+        content: '';
+        background-color: #000000b5;
+        opacity: 0.75;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        z-index: -1;
+    }
+
+    .cu-btn {
+        border-radius: 100px !important;
+    }
+
+    .about-img {
+        border-radius: 20px;
+    }
+
+    .ct-btn {
+        font-size: 11px;
+        border-radius: 50px;
+    }
+
+    .tiny-slider-one-wrapper .single-hero-slide {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 200px !important;
+        background-position: center center;
+        background-size: cover;
+    }
+
+    .form-control.form-control-clicked {
+        background-color: hsl(0, 31%, 95%);
+        border-color: #c6c6c6;
+        color: #073984;
+    }
+</style>
+
+<div class="page-content-wrapper p-2 pt-4">
+    <div class="">
+        <div class="card">
+            <div class="card-body">
+                <p>Manage Announcements</p>
+                <a href="/add-activity" class="btn btn-dark btn-sm mb-4">+ Add Announcement</a>
+                {{!-- <a href="/calender" class="btn btn-dark btn-sm mb-4">View Event Calender</a> --}}
+                <div class="table-responsive">
+                    <table class="w-100" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Image</th>
+                                <th>Title</th>
+                                <th>Desc</th>
+                                <th>To</th>
+                                <th>Manage</th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each activities}}
+                            <tr>
+                                <td>{{this.date}}</td>
+                                <td><img src="/images/activity-images/{{this._id}}.png" width="50px" alt=""></td>
+
+                                <td><b>{{this.title}}</b></td>
+
+                                <td>{{this.desc}}</td>
+                                <td>{{this.to}}</td>
+
+                                <td><a href="/delete-activity/{{this._id}}" class="btn btn-danger">Delete</a></td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput');
+        var filter = input.value.toUpperCase();
+        var list = document.getElementById("elementsSearchList");
+        var listItem = list.getElementsByClassName('col-4');
+
+        for (i = 0; i < listItem.length; i++) {
+            var a = listItem[i];
+            var textValue = a.textContent || a.innerText;
+            if (textValue.toUpperCase().indexOf(filter) > -1) {
+                listItem[i].style.display = "";
+            } else {
+                listItem[i].style.display = "none";
+            }
+        }
+    }
+
+</script>
+
+
+
+</div>

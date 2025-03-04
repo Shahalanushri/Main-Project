@@ -1,0 +1,41 @@
+<main id="main" class="main">
+
+    <div class="pagetitle">
+        <h1>Dashboard</h1>
+        <nav>
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                <li class="breadcrumb-item active">Dashboard</li>
+            </ol>
+        </nav>
+    </div><!-- End Page Title -->
+
+    {{!-- <textarea id="alertMessage" placeholder="Enter alert message"></textarea>
+    <button id="sendAlert">Send Alert</button> --}}
+
+
+</main><!-- End #main -->
+
+<a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+        class="bi bi-arrow-up-short"></i></a>
+
+
+{{!--
+<script src="/socket.io/socket.io.js"></script> --}}
+
+<script>
+    // ✅ Ensure socket connection
+    const socket = io();
+
+    document.getElementById("sendAlert").addEventListener("click", () => {
+        const message = document.getElementById("alertMessage").value || "🚨 Default Admin Alert";
+
+        fetch("/admin/send-alert", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message })
+        }).then(response => response.json())
+            .then(data => console.log("Response:", data))
+            .catch(error => console.error("Error:", error));
+    });
+</script>

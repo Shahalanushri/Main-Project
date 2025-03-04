@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="SmartConnect - PWA Mobile HTML Template">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme-color" content="#f1b10f">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+  <!-- Title -->
+  {{#if builder}}
+  <title>Workspace</title>
+  {{else}}
+  <title>User</title>
+  {{/if}}
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.gstatic.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap"
+    rel="stylesheet">
+  <!-- Favicon -->
+  <link rel="icon" href="img/core-img/favicon.ico">
+  <link rel="apple-touch-icon" href="img/icons/icon-96x96.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="img/icons/icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="167x167" href="img/icons/icon-167x167.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="img/icons/icon-180x180.png">
+  <!-- CSS Libraries -->
+
+  <link rel="stylesheet" href="/assets2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="/assets2/css/bootstrap-icons.css">
+  <link rel="stylesheet" href="/assets2/css/tiny-slider.css">
+  <link rel="stylesheet" href="/assets2/css/baguetteBox.min.css">
+  <link rel="stylesheet" href="/assets2/css/rangeslider.css">
+  <link rel="stylesheet" href="/assets2/css/vanilla-dataTables.min.css">
+  <link rel="stylesheet" href="/assets2/css/apexcharts.css">
+  <script src="https://cdn.ckeditor.com/ckeditor5/36.0.0/classic/ckeditor.js"></script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <!-- Core Stylesheet -->
+
+  <link rel="stylesheet" href="/assets2/style.css">
+  <!-- Web App Manifest -->
+  <link rel="manifest" href="/assets2/manifest.json">
+</head>
+<style>
+  .middle-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    text-align: center;
+  }
+</style>
+<style>
+  html,
+  body {
+    background-color: rgb(234, 234, 234);
+  }
+
+  .form-control:disabled,
+  .form-control[readonly] {
+    background-color: #fff;
+  }
+
+  .middle-content {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .header-content {
+    z-index: 1;
+    height: 70px;
+  }
+</style>
+
+
+<body>
+  {{#if builder}}
+  {{!-- {{>workspace-header}} --}}
+  {{else if admin}}
+  {{>admin-header}}
+  {{else}}
+  {{/if}}
+
+
+  {{{body}}}
+
+  <!-- All JavaScript Files -->
+  <script src="/assets2/js/bootstrap.bundle.min.js"></script>
+  <script src="/assets2/js/slideToggle.min.js"></script>
+  <script src="/assets2/js/internet-status.js"></script>
+
+  <script src="/assets2/js/tiny-slider.js"></script>
+  <script src="/assets2/js/baguetteBox.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+  {{!--
+  <script src="/assets2/js/countdown.js"></script> --}}
+  <script src="/assets2/js/rangeslider.min.js"></script>
+  <script src="/assets2/js/vanilla-dataTables.min.js"></script>
+  <script src="/assets2/js/index.js"></script>
+  <script src="/assets2/js/magic-grid.min.js"></script>
+  <script src="/assets2/js/dark-rtl.js"></script>
+  <script src="/assets2/js/active.js"></script>
+  <!-- PWA -->
+  <script src="/assets2/js/pwa.js"></script>
+</body>
+
+</html>
