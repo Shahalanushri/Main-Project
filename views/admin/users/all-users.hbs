@@ -53,11 +53,28 @@
                                 <form action="/admin/reject-user/{{this._id}}" method="POST">
                                     <button type="submit" class="btn btn-dark btn-sm"><i class="bi bi-ban"></i></button>
                                 </form>
+
+
                                 {{/if}}
                                 <form action="/admin/delete-user/{{this._id}}" method="POST">
                                     <button type="submit" class="btn btn-danger btn-sm"><i
                                             class="bi bi-trash"></i></button>
                                 </form>
+                                {{#if this.isDisable}}
+                                <td>
+                                    <form action="/admin/unblock-user/{{this._id}}" method="POST">
+                                        <button onclick="return confirm('Are You Sure to unblock {{this.Fname}} ?')"
+                                            type="submit" class="btn btn-primary btn-sm">Unblock</button>
+                                    </form>
+                                </td>
+                                {{else}}
+                                <td>
+                                    <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                                        data-bs-target="#blockModal"
+                                        onclick="setUserIdToBlock('{{this._id}}')">Block</a>
+
+                                </td>
+                                {{/if}}
                             </div>
                             <a href="/admin/set-role/{{this._id}}" class="btn mt-4 btn-dark btn-sm">Assign
                                 Role</a>
@@ -75,6 +92,7 @@
     </section>
 
 </main><!-- End #main -->
+
 
 <div class="modal fade" id="blockModal" tabindex="-1" aria-labelledby="blockModalLabel" aria-hidden="true">
     <div class="modal-dialog">

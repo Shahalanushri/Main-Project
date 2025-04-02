@@ -1,0 +1,71 @@
+<div class="page-content-wrapper p-2 pt-4">
+    <div class="">
+        <div class="card">
+            <div class="card-body">
+                <p>Manage Polls</p>
+                {{!-- <a href="/poll" class="btn btn-dark btn-sm mb-4">Polls</a> --}}
+                {{!-- <a href="/calender" class="btn btn-dark btn-sm mb-4">View Survey Calender</a> --}}
+
+                <div class="row">
+                    {{#each poll}}
+                    <div class="col-12">
+                        <div class="card p-4 mb-4 shadow">
+                            <b>{{this.title}}</b> <br>
+                            <b>Date:</b> {{this.date}} <br>
+
+                            <hr>
+
+                            <b>{{this.content}}</b>
+                            <p>{{this.desc}}</p>
+
+                            {{#if this.options}}
+                            <b>Options:</b>
+
+                            <form action="/submit-poll/{{this._id}}" method="POST">
+                                <input type="hidden" value="{{this.content}}" name="content">
+                                <input type="hidden" value="{{this.desc}}" name="desc">
+
+                                {{#each this.options}}
+                                <div class="card p-2 shadow mb-2">
+                                    <label class="ms-2">
+                                        <input type="radio" name="option" value="{{this}}" required> {{this}}
+                                    </label>
+
+                                </div>
+                                {{/each}}
+
+                                <button type="submit" class="btn btn-success mt-3">Submit</button>
+                            </form>
+                            {{/if}}
+
+
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+
+
+
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Search Functionality -->
+<script>
+    function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput').value.toUpperCase();
+        var cards = document.getElementById("elementsSearchList").getElementsByClassName("col-md-4");
+
+        for (var i = 0; i < cards.length; i++) {
+            var title = cards[i].querySelector(".card-title").innerText.toUpperCase();
+            if (title.indexOf(input) > -1) {
+                cards[i].style.display = "";
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+    }
+</script>

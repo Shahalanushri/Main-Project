@@ -4,7 +4,7 @@ var adminHelper = require("../helper/adminHelper");
 const crypto = require('crypto');
 const Razorpay = require("razorpay");
 var fs = require("fs");
-
+const path = require("path");
 var router = express.Router();
 var db = require("../config/connection");
 var collections = require("../config/collections");
@@ -32,11 +32,58 @@ router.get("/", async function (req, res, next) {
 
 router.get("/home", verifySignedIn, async function (req, res, next) {
   let user = req.session.user;
-  let activities = await userHelper.getAllactivities()
+  let activities = await userHelper.getAllactivities();
+  let ads = await userHelper.getAllAds();
   userHelper.getAllevents().then((events) => {
-    res.render("users/home", { admin: false, activities, events, user });
+    res.render("users/home", { admin: false, activities, events, user, ads });
   });
 });
+
+
+
+router.get("/all-ann", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  userHelper.getAllactivities().then((activities) => {
+    res.render("users/all-ann", { admin: false, activities, user });
+  });
+});
+
+//avilabilty
+router.get("/check-pool-availability", async (req, res) => {
+  const { timeSlot, personCount } = req.query;
+
+  if (!timeSlot || !personCount) {
+    return res.status(400).json({ error: "Time slot and person count are required" });
+  }
+
+  const result = await userHelper.checkSlotAvailability(timeSlot);
+
+  if (result.availableSlots < personCount) {
+    return res.json({ availableSlots: result.availableSlots, message: "Not enough slots available" });
+  }
+
+  res.json({ availableSlots: result.availableSlots, message: "Slots available" });
+});
+
+router.get("/check-hall-availability", async (req, res) => {
+  const { timeSlot} = req.query;
+
+  if (!timeSlot) {
+    return res.status(400).json({ error: "Time slot and person count are required" });
+  }
+
+  const result = await userHelper.checkHallSlotAvailability(timeSlot);
+
+  console.log(result,"lllllllll")
+
+  if (result.availableSlots =="booked") {
+    return res.json({ availableSlots: result.availableSlots, message: "Not enough slots available" });
+  }
+
+  res.json({ availableSlots: result.availableSlots, message: "Slots available" });
+});
+
+
 
 
 ///////user event/////////////////////                                         
@@ -177,6 +224,12 @@ router.get("/validation", async function (req, res, next) {
   res.render("users/validation", { admin: false, layout: 'empty', user });
 });
 
+router.get("/tempvalidation", async function (req, res, next) {
+  let user = req.session.user;
+  res.render("users/tempvalidation", { admin: false, layout: 'empty', user });
+});
+
+
 
 router.get("/continue/:id", async function (req, res, next) {
   let user = req.session.user;
@@ -186,7 +239,16 @@ router.get("/continue/:id", async function (req, res, next) {
 });
 
 
-router.post("/continue/:id", verifySignedIn, async function (req, res) {
+router.get("/tempcontinue/:id", async function (req, res, next) {
+  let user = req.session.user;
+  let userId = req.session.user._id;
+  let userProfile = await userHelper.getUserDetailsTEMP(userId);
+  res.render("users/tempcontinue", { admin: false, layout: 'empty', user, userProfile });
+});
+
+
+
+router.post("/tempcontinue/:id", verifySignedIn, async function (req, res) {
   try {
     const { Fname, Lname, Email, Phone, Address, District, Pincode } = req.body;
     let errors = {};
@@ -196,9 +258,9 @@ router.post("/continue/:id", verifySignedIn, async function (req, res) {
       errors.fname = 'Please enter your first name.';
     }
 
-    if (!District || District.trim().length === 0) {
-      errors.district = 'Please enter your first name.';
-    }
+    // if (!District || District.trim().length === 0) {
+    //   errors.district = 'Please enter your first name.';
+    // }
 
     // Validate last name
     // if (!Lname || Lname.trim().length === 0) {
@@ -219,11 +281,107 @@ router.post("/continue/:id", verifySignedIn, async function (req, res) {
 
 
     // Validate pincode
-    if (!Pincode) {
-      errors.pincode = "Please enter your pincode.";
-    } else if (!/^\d{6}$/.test(Pincode)) {
-      errors.pincode = "Pincode must be exactly 6 digits.";
+    // if (!Pincode) {
+    //   errors.pincode = "Please enter your pincode.";
+    // } else if (!/^\d{6}$/.test(Pincode)) {
+    //   errors.pincode = "Pincode must be exactly 6 digits.";
+    // }
+
+    if (!Phone) {
+      errors.phone = "Please enter your phone number.";
+    } else if (!/^\d{10}$/.test(Phone)) {
+      errors.phone = "Phone number must be exactly 10 digits.";
+    } else {
+      const existingPhone = await db.get()
+        .collection(collections.USERS_COLLECTION)
+        .findOne({ Phone });
+
+      if (existingPhone) {
+        errors.phone = "This phone number is already registered.";
+      }
     }
+
+    if (!Fname) errors.fname = "Please enter your first name.";
+    // if (!Lname) errors.lname = "Please enter your last name.";
+    if (!Email) errors.email = "Please enter your email.";
+    if (!Address) errors.address = "Please enter your address.";
+    if (!District) errors.district = "Please enter your district.";
+
+    // Validate other fields as needed...
+
+    // If there are validation errors, re-render the form with error messages
+    if (Object.keys(errors).length > 0) {
+      let userProfile = await userHelper.getUserDetails(req.params.id);
+      return res.render("users/tempcontinue", {
+        admin: false,
+        userProfile,
+        user: req.session.user,
+        errors,
+        Fname,
+        Lname,
+        Email,
+        Phone,
+        Address,
+        District,
+        Pincode,
+        layout: 'empty'
+      });
+    }
+
+    // Update the user profile
+    await userHelper.updateUserProfileTEMP(req.params.id, req.body);
+
+    // Fetch the updated user profile and update the session
+    let updatedUserProfile = await userHelper.getUserDetailsTEMP(req.params.id);
+    req.session.user = updatedUserProfile;
+
+    // Redirect to the profile page
+    res.redirect("/temppayment");
+  } catch (err) {
+    console.error("Profile update error:", err);
+    res.status(500).send("An error occurred while updating the profile.");
+  }
+});
+
+
+router.post("/continue/:id", verifySignedIn, async function (req, res) {
+  try {
+    const { Fname, Lname, Email, Phone, Address, District, Pincode } = req.body;
+    let errors = {};
+
+    // Validate first name
+    if (!Fname || Fname.trim().length === 0) {
+      errors.fname = 'Please enter your first name.';
+    }
+
+    // if (!District || District.trim().length === 0) {
+    //   errors.district = 'Please enter your first name.';
+    // }
+
+    // Validate last name
+    // if (!Lname || Lname.trim().length === 0) {
+    //   errors.lname = 'Please enter your last name.';
+    // }
+
+    // Validate email format
+    if (!Email || !/^\S+@\S+\.\S+$/.test(Email)) {
+      errors.email = 'Please enter a valid email address.';
+    }
+
+    // Validate phone number
+    if (!Phone) {
+      errors.phone = "Please enter your phone number.";
+    } else if (!/^\d{10}$/.test(Phone)) {
+      errors.phone = "Phone number must be exactly 10 digits.";
+    }
+
+
+    // Validate pincode
+    // if (!Pincode) {
+    //   errors.pincode = "Please enter your pincode.";
+    // } else if (!/^\d{6}$/.test(Pincode)) {
+    //   errors.pincode = "Pincode must be exactly 6 digits.";
+    // }
 
     if (!Phone) {
       errors.phone = "Please enter your phone number.";
@@ -286,6 +444,47 @@ router.get("/payment", async function (req, res, next) {
   res.render("users/payment", { admin: false, user, layout: 'empty' });
 });
 
+
+router.get("/temppayment", async function (req, res, next) {
+  let user = req.session.user;
+  res.render("users/temppayment", { admin: false, user, layout: 'empty' });
+});
+
+
+router.post('/create-ordertemp', async (req, res) => {
+  try {
+    const userId = req.session.user._id; // Retrieve userId from session
+    const amount = 500; // Registration Fee amount
+
+    const order = await userHelper.createOrder(amount);
+
+    const updatedUser = await db
+      .get()
+      .collection(collections.TEMPUSERS_COLLECTION)
+      .updateOne(
+        { _id: ObjectId(userId) },
+        {
+          $set: {
+            userStatus: 'paid',
+            amount,
+          },
+        }
+      );
+
+    if (updatedUser.modifiedCount > 0) {
+      res.json({ success: true, order });
+    } else {
+      res.json({
+        success: false,
+        message: 'Order created, but failed to update user status.',
+      });
+    }
+  } catch (error) {
+    console.error('Error creating order:', error);
+    res.json({ success: false, message: 'Failed to create order' });
+  }
+});
+
 router.post('/create-order', async (req, res) => {
   try {
     const userId = req.session.user._id; // Retrieve userId from session
@@ -335,6 +534,42 @@ router.post('/verify', async (req, res) => {
       await db
         .get()
         .collection(collections.USERS_COLLECTION)
+        .updateOne(
+          { _id: ObjectId(userId) },
+          { $set: { userStatus: 'verified', amount } }
+        );
+
+      return res.json({ success: true });
+    } else {
+      // Signature does not match
+      return res.json({ success: false, message: 'Payment verification failed' });
+    }
+  } catch (error) {
+    console.error('Error during payment verification:', error);
+    return res.json({
+      success: false,
+      message: 'Internal server error during payment verification',
+    });
+  }
+});
+
+
+
+router.post('/tempverify', async (req, res) => {
+  try {
+    const { paymentId, orderId, signature, userId, amount } = req.body;
+
+    const body = `${orderId}|${paymentId}`;
+    const expectedSignature = crypto
+      .createHmac('sha256', 'xPzG53EXxT8PKr34qT7CTFm9') // Replace with your Razorpay secret key
+      .update(body.toString())
+      .digest('hex');
+
+    if (expectedSignature === signature) {
+      // Payment is verified
+      await db
+        .get()
+        .collection(collections.TEMPUSERS_COLLECTION)
         .updateOne(
           { _id: ObjectId(userId) },
           { $set: { userStatus: 'verified', amount } }
@@ -451,6 +686,88 @@ router.post("/signup", async function (req, res) {
 
 
 
+router.get("/tempuser", function (req, res) {
+  res.render("users/tempuser", { admin: false, layout: 'empty' });
+});
+
+router.post("/tempuser", async function (req, res) {
+  const { Fname, Email, Password } = req.body;
+  let errors = {};
+
+  // Check if email already exists
+  const existingEmail = await db.get()
+    .collection(collections.USERS_COLLECTION)
+    .findOne({ Email });
+
+  if (existingEmail) {
+    errors.email = "This email is already registered.";
+  }
+
+  // Validate phone number length and uniqueness
+
+  // if (!Phone) {
+  //   errors.phone = "Please enter your phone number.";
+  // } else if (!/^\d{10}$/.test(Phone)) {
+  //   errors.phone = "Phone number must be exactly 10 digits.";
+  // } else {
+  //   const existingPhone = await db.get()
+  //     .collection(collections.USERS_COLLECTION)
+  //     .findOne({ Phone });
+
+  //   if (existingPhone) {
+  //     errors.phone = "This phone number is already registered.";
+  //   }
+  // }
+  // Validate Pincode
+  // if (!Pincode) {
+  //   errors.pincode = "Please enter your pincode.";
+  // } else if (!/^\d{6}$/.test(Pincode)) {
+  //   errors.pincode = "Pincode must be exactly 6 digits.";
+  // }
+
+  if (!Fname) errors.fname = "Please enter your first name.";
+  if (!Email) errors.email = "Please enter your email.";
+  // if (!Address) errors.address = "Please enter your address.";
+  // if (!District) errors.district = "Please enter your city.";
+
+  // Password validation
+  if (!Password) {
+    errors.password = "Please enter a password.";
+  } else {
+    const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_])[A-Za-z\d\W_]{8,}$/;
+    if (!strongPasswordRegex.test(Password)) {
+      errors.password = "Password must be at least 8 characters long and include an uppercase letter, a lowercase letter, a number, and a special character.";
+    }
+  }
+
+  if (Object.keys(errors).length > 0) {
+    return res.render("users/tempuser", {
+      admin: false,
+      layout: 'empty',
+      errors,
+      Fname,
+      Email,
+      // Phone,
+      // Address,
+      // Pincode,
+      // District,
+      Password
+    });
+  }
+
+  // Proceed with signup
+  userHelper.dotempSignup(req.body).then((response) => {
+    req.session.signedIn = true;
+    req.session.user = response;
+    res.redirect("/tempvalidation");
+  }).catch((err) => {
+    console.error("Signup error:", err);
+    res.status(500).send("An error occurred during signup.");
+  });
+});
+
+
+
 router.get("/signin", function (req, res) {
   if (req.session.signedIn) {
     res.redirect("/home");
@@ -486,7 +803,13 @@ router.post("/signin", function (req, res) {
     } else if (response.status === "rejected") {
       req.session.signInErr = "This user is rejected by admin.";
       return res.redirect("/signin");
-    } else if (response.status && response.user) {
+    }
+    // ✅ Check if the account is disabled
+    else if (response.status === false && response.msg) {
+      req.session.signInErr = response.msg;
+      return res.redirect("/signin");
+    }
+    else if (response.status && response.user) {
       req.session.signedIn = true;
       req.session.user = response.user;
 
@@ -496,6 +819,8 @@ router.post("/signin", function (req, res) {
           return res.redirect("/president");
         case "Treasurer":
           return res.redirect("/treasurer");
+        case "Business-owner":
+          return res.redirect("/business-owner");
         case "Secretary":
           return res.redirect("/secretary");
         case "Resource Manager":
@@ -517,6 +842,76 @@ router.post("/signin", function (req, res) {
 });
 
 
+
+
+
+
+router.get("/tempsignin", function (req, res) {
+  if (req.session.signedIn) {
+    res.redirect("/home");
+  } else {
+    res.render("users/tempsignin", {
+      admin: false,
+      layout: 'empty',
+      signInErr: req.session.signInErr,
+    });
+    req.session.signInErr = null;
+  }
+});
+
+
+router.post("/tempsignin", function (req, res) {
+  const { Email, Password } = req.body;
+
+  if (!Email || !Password) {
+    req.session.signInErr = "Please fill in all fields.";
+    return res.render("users/tempsignin", {
+      admin: false,
+      layout: "empty",
+      signInErr: req.session.signInErr,
+      email: Email,
+      password: Password,
+    });
+  }
+
+  userHelper.doTempSignin(req.body).then((response) => {
+    if (response.status === "pending") {
+      req.session.signInErr = "User is not approved by admin.";
+      return res.redirect("/tempsignin");
+    } else if (response.status === "rejected") {
+      req.session.signInErr = "This user is rejected by admin.";
+      return res.redirect("/tempsignin");
+    } else if (response.status && response.user) {
+      req.session.signedIn = true;
+      req.session.user = response.user;
+
+      // Redirect based on role
+      switch (response.user.role) {
+        case "President":
+          return res.redirect("/president");
+        case "Treasurer":
+          return res.redirect("/treasurer");
+        case "Secretary":
+          return res.redirect("/secretary");
+        case "Resource Manager":
+          return res.redirect("/resource-manager");
+        case "Temp-Residence":  // If user is a resident, go to /home
+        default:
+          return res.redirect("/home");
+      }
+    } else {
+      req.session.signInErr = "Invalid Email/Password";
+      return res.render("users/tempsignin", {
+        admin: false,
+        layout: "empty",
+        signInErr: req.session.signInErr,
+        email: Email,
+      });
+    }
+  });
+});
+
+
 //////////////ROLES/////////////////////
 router.get("/president", verifySignedIn, async function (req, res, next) {
   let user = req.session.user;
@@ -526,6 +921,59 @@ router.get("/treasurer", verifySignedIn, async function (req, res, next) {
   let user = req.session.user;
   let users = await adminHelper.getAllUsers();
   res.render("users/treasurer/home", { admin: false, user, users });
+});
+
+router.get("/registration", verifySignedIn, async function (req, res, next) {
+  try {
+    let user = req.session.user;
+    let { fromDate, toDate } = req.query; // Get filter values from query parameters
+
+    let users = await adminHelper.getFilteredUsers(fromDate, toDate);
+    let { payments, grandTotal } = await adminHelper.getUserPayments(); // ✅ Get grand total
+
+    res.render("users/registration", {
+      admin: false,
+      user,
+      users,
+      payments,
+      grandTotal,  // ✅ Pass to HBS
+      fromDate,
+      toDate
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+
+router.get("/event", verifySignedIn, async function (req, res, next) {
+  try {
+    let user = req.session.user;
+    let { fromDate, toDate } = req.query;
+
+    let orders = await adminHelper.getAllOrdersEvent(fromDate, toDate);
+    let { payments, grandTotal } = await adminHelper.getUserPaymentsOrder();
+
+    res.render("users/event", {
+      admin: false,
+      user,
+      orders,  // ✅ Sorted Orders
+      payments,
+      grandTotal,
+      fromDate,
+      toDate
+    });
+  } catch (err) {
+    next(err);
+  }
+});
+
+
+
+router.get("/business-owner", verifySignedIn, async function (req, res, next) {
+  let user = req.session.user;
+  res.render("users/business-owner/home", { admin: false, user });
 });
 
 
@@ -566,6 +1014,83 @@ router.post("/book-now", async (req, res) => {
   } catch (error) {
     console.error("Error in booking:", error);
     res.status(500).send("Something went wrong. Please try again.");
+  }
+});
+
+router.post("/book-now-pool", async (req, res) => {
+  try {
+    console.log(req.body, "poooollll")
+
+    let bookingData = {
+      title: "Pool",
+      desc: req.body.desc,
+      timeSlot: req.body.timeSlot,
+      price: req.body.price,
+      userId: req.body.userId,
+      username: req.body.username,
+      useremail: req.body.useremail,
+      userphone: req.body.userphone,
+      useraddress: req.body.useraddress,
+      count: req.body.personCount,
+      date: new Date()
+    };
+    console.log(bookingData, "bookdata")
+
+    // Store booking data in the database
+    await userHelper.storeBookingPool(bookingData);
+
+    res.send("<script>alert('Booking Confirmed!'); window.location.href='/facilities';</script>"); // Redirect after success
+  } catch (error) {
+    console.error("Error in booking:", error);
+    res.status(500).send("Something went wrong. Please try again.", error);
+  }
+});
+
+router.post("/book-now-hall", async (req, res) => {
+  try {
+    console.log(req.body, "poooollll")
+
+    let bookingData = {
+      title: "Hall",
+      desc: req.body.desc,
+      timeSlot: req.body.timeSlot,
+      price: req.body.price,
+      userId: req.body.userId,
+      username: req.body.username,
+      useremail: req.body.useremail,
+      userphone: req.body.userphone,
+      useraddress: req.body.useraddress,
+      date: new Date()
+    };
+    console.log(bookingData, "bookdata")
+
+    // Store booking data in the database
+    await userHelper.storeBookingHall(bookingData);
+
+    res.send("<script>alert('Booking Confirmed!'); window.location.href='/facilities';</script>"); // Redirect after success
+  } catch (error) {
+    console.error("Error in booking:", error);
+    res.status(500).send("Something went wrong. Please try again.", error);
+  }
+});
+
+router.get("/reset-pool-availability", async (req, res) => {
+  try {
+    await userHelper.resetPoolAvailability();
+    res.redirect("/facilities")
+    console.log("Pool availability reset successfully");
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error resetting pool availability", error });
+  }
+});
+
+router.get("/reset-hall-availability", async (req, res) => {
+  try {
+    await userHelper.resetHallAvailability();
+    res.redirect("/facilities")
+    console.log("Hall availability reset successfully");
+  } catch (error) {
+    res.status(500).json({ success: false, message: "Error resetting pool availability", error });
   }
 });
 
@@ -718,6 +1243,31 @@ router.get("/delete-activity/:id", verifySignedIn, function (req, res) {
 });
 
 
+router.get("/alerts", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  userHelper.getAllcontacts().then((contacts) => {
+    res.render("users/alerts", { admin: false, contacts, user });
+  });
+});
+
+
+
+router.get("/emergency", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  userHelper.getAllcontacts().then((contacts) => {
+    res.render("users/emergency", { admin: false, contacts, user });
+  });
+});
+
+
+
+router.get("/main", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  userHelper.getAllmcontacts().then((mcontacts) => {
+    res.render("users/main", { admin: false, mcontacts, user });
+  });
+});
+
 
 ///////ALL contact/////////////////////                                         
 router.get("/all-contacts", verifySignedIn, function (req, res) {
@@ -740,6 +1290,36 @@ router.post("/add-contact", function (req, res) {
 
   });
 });
+
+
+
+
+
+///////ALL mcontact/////////////////////                                         
+router.get("/all-mcontacts", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  userHelper.getAllmcontacts().then((mcontacts) => {
+    res.render("users/secretary/all-mcontacts", { admin: false, mcontacts, user });
+  });
+});
+
+///////ADD mcontacts/////////////////////                                         
+router.get("/add-mcontact", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  res.render("users/secretary/add-mcontact", { admin: false, user });
+});
+
+///////ADD mcontacts/////////////////////                                         
+router.post("/add-mcontact", function (req, res) {
+  userHelper.addmcontact(req.body, (id) => {
+    res.redirect("/all-mcontacts");
+
+  });
+});
+
+
+
+
 
 ///////EDIT contacts/////////////////////                                         
 router.get("/edit-contact/:id", verifySignedIn, async function (req, res) {
@@ -768,6 +1348,15 @@ router.post("/edit-contact/:id", verifySignedIn, function (req, res) {
 router.get("/delete-contact/:id", verifySignedIn, function (req, res) {
   let contactId = req.params.id;
   userHelper.deletecontact(contactId).then((response) => {
+    res.redirect("/all-contacts");
+  });
+});
+
+
+///////DELETE contacts/////////////////////                                         
+router.get("/delete-mcontact/:id", verifySignedIn, function (req, res) {
+  let contactId = req.params.id;
+  userHelper.mdeletecontact(contactId).then((response) => {
     res.redirect("/all-contacts");
   });
 });
@@ -807,14 +1396,15 @@ router.get("/add-event", verifySignedIn, function (req, res) {
 ///////ADD events/////////////////////                                         
 router.post("/add-event", function (req, res) {
   userHelper.addevent(req.body, (id) => {
-    let image = req.files.Image;
-    image.mv("./public/images/event-images/" + id + ".png", (err, done) => {
-      if (!err) {
-        res.redirect("/all-events");
-      } else {
-        console.log(err);
-      }
-    });
+    if (req.files && req.files.Image) {
+      let image = req.files.Image;
+      image.mv("./public/images/event-images/" + id + ".png", (err) => {
+        if (err) {
+          console.log(err);
+        }
+      });
+    }
+    res.redirect("/all-events"); // Redirect whether or not an image exists
   });
 });
 
@@ -1013,28 +1603,36 @@ router.get('/place-order/:id', verifySignedIn, async (req, res) => {
 });
 
 router.post('/place-order', async (req, res) => {
-  let user = req.session.user;
-  let eventId = req.body.eventId;
+  try {
+    let user = req.session.user;
+    let eventId = req.body.eventId;
+    let numberOfSeats = parseInt(req.body.noseat) || 1; // Get the number of seats (default: 1)
 
-  // Fetch event details
-  let event = await userHelper.getEventDetails(eventId);
-  let totalPrice = event.Price; // Get the price from the event
+    // Fetch event details
+    let event = await userHelper.getEventDetails(eventId);
+    let totalPrice = event.Price * numberOfSeats; // Multiply price by number of seats
 
-  // Call placeOrder function
-  userHelper.placeOrder(req.body, event, totalPrice, user)
-    .then((orderId) => {
-      if (req.body["payment-method"] === "COD") {
-        res.json({ codSuccess: true });
-      } else {
-        userHelper.generateRazorpay(orderId, totalPrice).then((response) => {
-          res.json(response);
-        });
-      }
-    })
-    .catch((err) => {
-      console.error("Error placing order:", err);
-      res.status(500).send("Internal Server Error");
-    });
+    // Call placeOrder function with updated total price
+    userHelper.placeOrder(req.body, event, totalPrice, user)
+      .then((orderId) => {
+        if (req.body["payment-method"] === "COD") {
+          res.json({ codSuccess: true });
+        } else {
+          // Generate Razorpay order with correct total amount
+          userHelper.generateRazorpay(orderId, totalPrice).then((response) => {
+            res.json(response);
+          });
+        }
+      })
+      .catch((err) => {
+        console.error("Error placing order:", err);
+        res.status(500).send("Internal Server Error");
+      });
+
+  } catch (error) {
+    console.error("Error in place-order route:", error);
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 
@@ -1105,6 +1703,15 @@ router.get("/cancel-order/:id", verifySignedIn, function (req, res) {
   });
 });
 
+
+
+router.get("/cancel-booking/:id", verifySignedIn, function (req, res) {
+  let bookingId = req.params.id;
+  userHelper.cancelBooking(bookingId).then(() => {
+    res.redirect("/orders");
+  });
+});
+
 router.post("/search", verifySignedIn, async function (req, res) {
   let user = req.session.user;
   let userId = req.session.user._id;
@@ -1121,6 +1728,42 @@ router.get("/all-services", verifySignedIn, function (req, res) {
 });
 
 
+router.get("/view-poll", verifySignedIn, async function (req, res) {
+  let user = req.session.user;
+  let polls = await userHelper.getAllApolls();
+  let voteCounts = await userHelper.getPollVoteCounts(); // Aggregated vote counts
+
+  res.render("users/view-poll", {
+    admin: false,
+    polls,
+    user,
+    voteCounts: JSON.stringify(voteCounts), // Pass as JSON string to HBS
+  });
+});
+
+
+
+router.get("/view-survey", verifySignedIn, async function (req, res) {
+  let user = req.session.user;
+  let allSurveys = await userHelper.surveys();
+
+  let filteredSurveys = allSurveys.filter(survey => {
+    const opt = survey.responses?.option_0?.toLowerCase()?.trim();
+    return opt === "yes";
+  });
+
+  res.render("users/view-survey", {
+    admin: false,
+    surveys: filteredSurveys,
+    user
+  });
+});
+
+
+
+
+
+
 ///////all gallery/////////////////////     
 
 router.get("/gallery", verifySignedIn, async function (req, res) {
@@ -1132,13 +1775,16 @@ router.get("/gallery", verifySignedIn, async function (req, res) {
 router.get("/all-galleries", verifySignedIn, async function (req, res) {
   let user = req.session.user;
   let galleries = await userHelper.getAllgalleries()
+  console.log("dsds", galleries);
+
   res.render("users/secretary/all-galleries", { admin: false, galleries, user });
 });
 
 ///////ADD gallerys/////////////////////                                         
-router.get("/add-gallery", verifySignedIn, function (req, res) {
+router.get("/add-gallery", verifySignedIn, async function (req, res) {
   let user = req.session.user;
-  res.render("users/secretary/add-gallery", { admin: false, user });
+  let events = await userHelper.getAllevents();
+  res.render("users/secretary/add-gallery", { admin: false, user, events });
 });
 
 ///////ADD gallerys/////////////////////                                         
@@ -1155,6 +1801,9 @@ router.post("/add-gallery", function (req, res) {
   });
 });
 
+
+
+
 ///////DELETE gallerys/////////////////////                                         
 router.get("/delete-gallery/:id", verifySignedIn, function (req, res) {
   let galleryId = req.params.id;
@@ -1166,6 +1815,301 @@ router.get("/delete-gallery/:id", verifySignedIn, function (req, res) {
 
 
 
+
+
+///////ALL event/////////////////////                                         
+router.get("/all-polls", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  userHelper.getAllpolls().then((polls) => {
+    res.render("users/secretary/all-polls", { admin: false, polls, user });
+  });
+});
+
+
+///////ADD polls/////////////////////                                   
+router.get("/add-poll", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  res.render("users/secretary/add-poll", { admin: false, user });
+});
+
+/////// ADD POLL /////////////////////
+router.post("/add-poll", function (req, res) {
+  console.log("Received Data:", req.body); // Check what is received
+
+  let { title, date, content, desc } = req.body;
+  let options = req.body["options[]"] || req.body.options; // Handle both formats
+
+  if (!options) {
+    console.log("Error: Options are undefined!");
+    return res.render("users/secretary/add-poll", {
+      admin: false,
+      user: req.session.user,
+      errorMessage: "Options are missing! Please try again."
+    });
+  }
+
+  if (!Array.isArray(options)) {
+    options = [options]; // Convert single option to an array
+  }
+
+  options = options.map(opt => opt.trim()).filter(opt => opt !== ""); // Trim and remove empty values
+
+  console.log("Filtered Options before saving:", options);
+
+  if (options.length === 0) {
+    return res.render("users/secretary/add-poll", {
+      admin: false,
+      user: req.session.user,
+      errorMessage: "At least one valid option is required!"
+    });
+  }
+
+  // ✅ Add createdAt field
+  let pollData = { title, date, content, desc, options, createdAt: new Date() };
+
+  console.log("Final Data to Save:", pollData);
+
+  userHelper.addpoll(pollData, (id) => {
+    res.redirect("/all-polls");
+  });
+});
+
+
+
+router.get("/delete-poll/:id", verifySignedIn, function (req, res) {
+  let pollId = req.params.id;
+  userHelper.deletepoll(pollId).then((response) => {
+    res.redirect("/all-polls");
+  });
+});
+
+
+
+router.get("/survey", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  userHelper.getAllsurvey().then((survey) => {
+    res.render("users/survey", { admin: false, survey, user });
+  });
+});
+
+router.post("/submit-survey/:id", (req, res) => {
+  let user = req.session.user;
+  const surveyId = req.params.id;
+  const responses = req.body; // Captures all Yes/No choices
+
+  console.log("Survey Responses:", responses);
+
+  // Store responses in DB with createdAt field
+  db.get()
+    .collection(collections.SURVEY_ANS_COLLECTION)
+    .insertOne({ surveyId, responses, user, createdAt: new Date() }) // Add createdAt
+    .then(() => res.redirect("/all-services"))
+    .catch((err) => console.error("Error saving responses:", err));
+});
+
+
+
+
+
+router.get("/poll", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  userHelper.getAllpolls().then((poll) => {
+    res.render("users/poll", { admin: false, poll, user });
+  });
+});
+
+router.post("/submit-poll/:id", (req, res) => {
+  let user = req.session.user;
+  const pollId = req.params.id;
+  const responses = req.body; // Captures all Yes/No choices
+
+  console.log("Poll Responses:", responses);
+
+  // Store responses in DB (modify as needed)
+  db.get()
+    .collection(collections.POLL_ANS_COLLECTION)
+    .insertOne({ pollId, responses, user, createdAt: new Date() })
+    .then(() => res.redirect("/all-services"))
+    .catch((err) => console.error("Error saving responses:", err));
+});
+
+
+
+
+
+
+
+///////ALL SURVEY/////////////////////                                         
+router.get("/all-survey", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  userHelper.getAllsurvey().then((survey) => {
+    res.render("users/secretary/all-survey", { admin: false, survey, user });
+  });
+});
+
+
+///////ADD polls/////////////////////                                   
+router.get("/add-survey", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  res.render("users/secretary/add-survey", { admin: false, user });
+});
+
+/////// ADD SURVEY /////////////////////
+router.post("/add-survey", function (req, res) {
+  console.log("Received Data:", req.body); // Check what is received
+
+  let { title, date, content, desc } = req.body;
+  let options = req.body["options[]"] || req.body.options; // Handle both formats
+
+  if (!options) {
+    console.log("Error: Options are undefined!");
+    return res.render("users/secretary/add-survey", {
+      admin: false,
+      user: req.session.user,
+      errorMessage: "Options are missing! Please try again."
+    });
+  }
+
+  if (!Array.isArray(options)) {
+    options = [options]; // Convert single option to an array
+  }
+
+  options = options.map(opt => opt.trim()).filter(opt => opt !== ""); // Trim and remove empty values
+
+  console.log("Filtered Options before saving:", options);
+
+  if (options.length === 0) {
+    return res.render("users/secretary/add-survey", {
+      admin: false,
+      user: req.session.user,
+      errorMessage: "At least one valid option is required!"
+    });
+  }
+
+  // ✅ Add createdAt field
+  let surveyData = { title, date, content, desc, options, createdAt: new Date() };
+
+  console.log("Final Data to Save:", surveyData);
+
+  userHelper.addsurvey(surveyData, (id) => {
+    res.redirect("/all-survey");
+  });
+});
+
+
+
+router.get("/delete-survey/:id", verifySignedIn, function (req, res) {
+  let surveyId = req.params.id;
+  userHelper.deletesurvey(surveyId).then((response) => {
+    res.redirect("/all-survey");
+  });
+});
+
+
+
+
+router.get("/business", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  adminHelper.getAllProducts().then((products) => {
+    res.render("users/business", { admin: false, products, user });
+  });
+});
+
+
+// router.get("/all-products", verifySignedIn, function (req, res) {
+//   let user = req.session.user;
+//   res.render("users/business-owner/all-products", { admin: false, user });
+// });
+
+
+
+router.get("/all-products", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+
+  userHelper.getAllProductsByid(user._id).then((products) => {
+    res.render("users/all-products", { admin: false, products, user });
+  });
+});
+
+
+router.get("/add-product", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  res.render("users/add-product", { admin: false, user });
+});
+
+router.post("/add-product", function (req, res) {
+  let userId = req.session.user ? req.session.user._id : null; // Get userId from session
+
+  if (!userId) {
+    return res.status(401).send("Unauthorized: User not logged in.");
+  }
+
+  let productData = { ...req.body, userId }; // Add userId to product data
+
+  adminHelper.addProduct(productData, (id) => {
+    let image = req.files.Image;
+    image.mv("./public/images/product-images/" + id + ".png", (err, done) => {
+      if (!err) {
+        res.redirect("/all-products");
+      } else {
+        console.log(err);
+      }
+    });
+  });
+});
+
+
+
+router.get("/delete-product/:id", verifySignedIn, function (req, res) {
+  let productId = req.params.id;
+  adminHelper.deleteProduct(productId).then((response) => {
+    fs.unlinkSync("./public/images/product-images/" + productId + ".png");
+    res.redirect("/all-products");
+  });
+});
+
+
+
+
+
+
+
+
+router.get("/all-ads", verifySignedIn, function (req, res) {
+  let user = req.session.user;
+  userHelper.getAllAds().then((ads) => {
+    res.render("users/all-ads", { admin: false, ads, user });
+  });
+});
+
+
+router.get("/add-ad", verifySignedIn, async function (req, res) {
+  let user = req.session.user;
+  let products = await adminHelper.getAllProducts();
+  res.render("users/add-ad", { admin: false, user, products });
+});
+
+router.post("/add-ad", function (req, res) {
+  adminHelper.addAd(req.body, (id) => {
+    let image = req.files.Image;
+    image.mv("./public/images/ad-images/" + id + ".png", (err, done) => {
+      if (!err) {
+        res.redirect("/all-ads");
+      } else {
+        console.log(err);
+      }
+    });
+  });
+});
+
+
+router.get("/delete-ad/:id", verifySignedIn, function (req, res) {
+  let adId = req.params.id;
+  adminHelper.deleteAd(adId).then((response) => {
+    fs.unlinkSync("./public/images/ad-images/" + adId + ".png");
+    res.redirect("/all-ads");
+  });
+});
 
 
 

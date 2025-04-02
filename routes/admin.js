@@ -16,22 +16,57 @@ const verifySignedIn = (req, res, next) => {
 };
 
 /* GET admins listing. */
-router.get("/", verifySignedIn, function (req, res, next) {
-  let administator = req.session.admin;
-  adminHelper.getAllProducts().then((products) => {
-    res.render("admin/home", { admin: true, products, layout: "admin-layout", administator });
-  });
+router.get("/", verifySignedIn, async function (req, res, next) {
+  try {
+    let administator = req.session.admin;
+    let users = await adminHelper.getAllUsers();
+    let userRegistrationData = await adminHelper.getUserRegistrationData(); // Fetch user registration data
+    let bookings = await adminHelper.getAllbookings();
+    let events = await userHelper.getAllevents();
+    let facilitie = await userHelper.getAllfacilities();
+    let { payments } = await adminHelper.getParticiation(); // ✅ Get grand total
+
+
+    res.render("admin/home", {
+      admin: true,
+      users,
+      userRegistrationData,
+      layout: "admin-layout",
+      administator,
+      bookings,
+      events,
+      facilitie,
+      payments,
+    });
+  } catch (err) {
+    next(err);
+  }
 });
 
 
+
 router.post("/send-alert", (req, res) => {
+  console.log("sent in post route");
   const { message } = req.body;
   if (req.io) {
-    req.io.emit("receiveAlert", message || "🚨 Default Admin Alert");
+    // req.io.emit("receiveAlert", message || "🚨 Default Admin Alert");
+    req.io.emit('hide', message || "🚨 Default Admin Alert");//testing trig
     console.log("Alert sent:", message);
-    res.json({ success: true, message: "Alert sent successfully!" });
+    res.json({ success: true, message: message });
   } else {
+    console.log("req.ioreq.ioreq.io:");
     res.status(500).json({ success: false, message: "Socket.io not initialized" });
+  }
+});
+
+
+
+router.get("/delete-expired-activities", async (req, res) => {
+  try {
+    await adminHelper.deleteExpiredActivities();
+    res.send("Expired activities deleted successfully.");
+  } catch (error) {
+    res.status(500).send("Error deleting expired activities.");
   }
 });
 
@@ -45,6 +80,8 @@ router.get("/all-officers", verifySignedIn, function (req, res) {
     res.render("admin/officers/all-officers", { admin: true, layout: "admin-layout", users, administator });
   });
 });
+
+
 
 
 router.post("/delete-officer/:id", verifySignedIn, async function (req, res) {
@@ -345,6 +382,76 @@ router.get("/all-users", verifySignedIn, function (req, res) {
 });
 
 
+
+router.post("/block-user/:id", (req, res) => {
+  const userId = req.params.id;
+  const { reason } = req.body;
+
+  // Update the user in the database to set isDisable to true and add the reason
+  db.get()
+    .collection(collections.USERS_COLLECTION)
+    .updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { isDisable: true, blockReason: reason } }
+    )
+    .then(() => res.json({ success: true }))
+    .catch(err => {
+      console.error('Error blocking user:', err);
+      res.json({ success: false });
+    });
+});
+
+
+router.post("/unblock-user/:id", (req, res) => {
+  const userId = req.params.id;
+  const { reason } = req.body;
+
+  // Update the user in the database to set isDisable to false
+  db.get()
+    .collection(collections.USERS_COLLECTION)
+    .updateOne(
+      { _id: new ObjectId(userId) },
+      { $set: { isDisable: false } }
+    )
+    .then(() => res.redirect("/admin/users/all-users")) // Redirect on success
+    .catch(err => {
+      console.error('Error unblocking user:', err);
+      res.json({ success: false });
+    });
+});
+
+
+router.get("/all-tempusers", verifySignedIn, function (req, res) {
+  let administator = req.session.admin;
+  adminHelper.getAllTempUsers().then((tempusers) => {
+    res.render("admin/tempusers/all-tempusers", { admin: true, layout: "admin-layout", administator, tempusers });
+  });
+});
+
+
+router.post("/approve-tempuser/:id", verifySignedIn, async function (req, res) {
+  await db.get().collection(collections.TEMPUSERS_COLLECTION).updateOne(
+    { _id: ObjectId(req.params.id) },
+    { $set: { approved: true } }
+  );
+  res.redirect("/admin/tempusers/all-tempusers");
+});
+
+router.post("/reject-tempuser/:id", function (req, res) {
+  const userId = req.params.id;
+  db.get()
+    .collection(collections.TEMPUSERS_COLLECTION)
+    .updateOne({ _id: ObjectId(userId) }, { $set: { approved: false, rejected: true } })
+    .then(() => {
+      res.redirect("/admin/tempusers/all-tempusers");
+    })
+    .catch((err) => {
+      console.error(err);
+      res.redirect("/admin/tempusers/all-tempusers");
+    });
+});
+
+
 router.post("/approve-user/:id", verifySignedIn, async function (req, res) {
   await db.get().collection(collections.USERS_COLLECTION).updateOne(
     { _id: ObjectId(req.params.id) },
@@ -366,6 +473,10 @@ router.post("/reject-user/:id", function (req, res) {
       res.redirect("/admin/users/all-users");
     });
 });
+
+
+
+
 
 
 router.post("/delete-user/:id", verifySignedIn, async function (req, res) {

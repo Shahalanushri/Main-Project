@@ -1,0 +1,50 @@
+<div class="page-content-wrapper p-2 pt-4">
+
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h5>Add New Maintenance Contact</h5> <br>
+                <form action="/add-mcontact" enctype="multipart/form-data" method="post">
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Name</label>
+                        <input class="form-control" name="name" id="exampleInputText" type="text"
+                            placeholder="Enter The Name">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="defaultSelect">Select Contact Type</label>
+                        <select class="form-select" id="defaultSelect" name="type" aria-label="Default select example">
+                            <option value="" selected disabled>Select Type</option>
+                            <option value="Cleaning">Cleaning</option>
+                            {{!-- <option value="Email">Email</option> --}}
+                            <option value="Hometaker">Hometaker</option>
+                            <option value="Plumber">Plumber</option>
+                            <option value="Electrician">Electrician</option>
+                            {{!-- <option value="Security">Security</option> --}}
+                            <option value="Other">Other</option>
+
+
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Contact Info</label>
+                        <input class="form-control" name="info" id="exampleInputText" type="text"
+                            placeholder="Enter Emergency Contact Number">
+                    </div>
+
+
+                    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                        type="submit">Add
+                        <svg class="bi bi-arrow-right-short" width="24" height="24" viewBox="0 0 16 16"
+                            fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z">
+                            </path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

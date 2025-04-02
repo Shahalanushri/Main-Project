@@ -7,6 +7,22 @@ const { ObjectId } = require('mongodb'); // Import ObjectId for MongoDB
 module.exports = {
 
 
+  deleteExpiredActivities: async () => {
+    try {
+      let today = new Date().toISOString().split("T")[0]; // Get today's date (YYYY-MM-DD)
+
+      // Delete all activities where date < today's date
+      const result = await db.get()
+        .collection(collections.ACTIVITY_COLLECTION)
+        .deleteMany({ date: { $lt: today } });
+
+      console.log(`Deleted ${result.deletedCount} expired activities.`);
+    } catch (error) {
+      console.error("Error deleting expired activities:", error);
+    }
+  },
+
+
   ///////GET ALL booking/////////////////////                                            
   getAllbookings: () => {
     return new Promise(async (resolve, reject) => {
@@ -294,15 +310,33 @@ module.exports = {
   },
 
 
+  addAd: (ad, callback) => {
+    console.log(ad);
+    ad.Price = parseInt(ad.Price);
+    db.get()
+      .collection(collections.ADS_COLLECTION)
+      .insertOne(ad)
+      .then((data) => {
+        console.log(data);
+        callback(data.ops[0]._id);
+      });
+  },
+
+
   addProduct: (product, callback) => {
     console.log(product);
     product.Price = parseInt(product.Price);
+    product.userId = new ObjectId(product.userId); // Ensure userId is stored as ObjectId
+
     db.get()
       .collection(collections.PRODUCTS_COLLECTION)
       .insertOne(product)
       .then((data) => {
         console.log(data);
-        callback(data.ops[0]._id);
+        callback(data.insertedId); // Corrected: `insertedId` instead of `data.ops[0]._id`
+      })
+      .catch((err) => {
+        console.error("Error adding product:", err);
       });
   },
 
@@ -382,6 +416,20 @@ module.exports = {
     });
   },
 
+
+
+  deleteAd: (adId) => {
+    return new Promise((resolve, reject) => {
+      db.get()
+        .collection(collections.ADS_COLLECTION)
+        .removeOne({ _id: objectId(adId) })
+        .then((response) => {
+          console.log(response);
+          resolve(response);
+        });
+    });
+  },
+
   updateProduct: (productId, productDetails) => {
     return new Promise((resolve, reject) => {
       db.get()
@@ -425,6 +473,176 @@ module.exports = {
           .toArray();
 
         resolve(users);
+      } catch (err) {
+        reject(err);  // Handle any error during fetching
+      }
+    });
+  },
+
+
+  getUserRegistrationData: () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const userRegistrations = await db
+          .get()
+          .collection(collections.USERS_COLLECTION)
+          .aggregate([
+            {
+              $project: {
+                date: {
+                  $dateToString: { format: "%Y-%m", date: "$createdAt" } // ✅ Group by Year-Month
+                }
+              }
+            },
+            {
+              $group: {
+                _id: "$date",
+                count: { $sum: 1 }
+              }
+            },
+            { $sort: { _id: 1 } } // Sort by date (ascending)
+          ])
+          .toArray();
+
+        resolve(userRegistrations);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+
+
+
+
+  getFilteredUsers: (fromDate, toDate) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let query = {};
+
+        if (fromDate && toDate) {
+          query.createdAt = {
+            $gte: new Date(fromDate), // Greater than or equal to fromDate
+            $lte: new Date(toDate)    // Less than or equal to toDate
+          };
+        }
+
+        const users = await db
+          .get()
+          .collection(collections.USERS_COLLECTION)
+          .find(query)
+          .sort({ createdAt: -1 })  // Sort by latest date
+          .toArray();
+
+        resolve(users);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+
+  getUserPayments: () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const payments = await db
+          .get()
+          .collection(collections.USERS_COLLECTION)
+          .aggregate([
+            {
+              $group: {
+                _id: {
+                  $dateToString: { format: "%Y-%m-%d", date: "$createdAt" }
+                },
+                totalAmount: { $sum: { $toInt: "$amount" } }, // Convert amount to number
+                count: { $sum: 1 }  // Count number of users per day
+              }
+            },
+            { $sort: { _id: 1 } }  // Sort by date (oldest first)
+          ])
+          .toArray();
+
+        // ✅ Calculate Grand Total
+        const grandTotal = payments.reduce((sum, payment) => sum + payment.totalAmount, 0);
+
+        resolve({ payments, grandTotal });  // ✅ Return both payments and grandTotal
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+
+
+  getParticiation: () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const payments = await db
+          .get()
+          .collection(collections.ORDER_COLLECTION)
+          .aggregate([
+            {
+              $group: {
+                _id: "$event.title",  // Group by event title
+                totalAmount: { $sum: { $toInt: "$totalAmount" } }, // Total amount per event
+                totalParticipants: { $sum: 1 }  // Count number of orders (participants) per event
+              }
+            },
+            { $sort: { totalParticipants: -1 } }  // Sort by most participants
+          ])
+          .toArray();
+
+        // ✅ Calculate Grand Total
+        const grandTotal = payments.reduce((sum, payment) => sum + payment.totalAmount, 0);
+
+        resolve({ payments, grandTotal });  // ✅ Return both event-based payments and grand total
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+
+
+
+  getUserPaymentsOrder: () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const payments = await db
+          .get()
+          .collection(collections.ORDER_COLLECTION)
+          .aggregate([
+            {
+              $group: {
+                _id: {
+                  $dateToString: { format: "%Y-%m-%d", date: "$date" }
+                },
+                totalAmount: { $sum: { $toInt: "$totalAmount" } }, // Convert amount to number
+                count: { $sum: 1 }  // Count number of orders per day
+              }
+            },
+            { $sort: { _id: 1 } }  // Sort by date (oldest first)
+          ])
+          .toArray();
+
+        // ✅ Calculate Grand Total
+        const grandTotal = payments.reduce((sum, payment) => sum + payment.totalAmount, 0);
+
+        resolve({ payments, grandTotal });  // ✅ Return both payments and grandTotal
+      } catch (err) {
+        reject(err);
+      }
+    });
+  },
+
+
+  getAllTempUsers: () => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const tempusers = await db
+          .get()
+          .collection(collections.TEMPUSERS_COLLECTION)
+          .find()
+          .sort({ createdAt: -1 })  // Sort by createdAt in descending order
+          .toArray();
+
+        resolve(tempusers);
       } catch (err) {
         reject(err);  // Handle any error during fetching
       }
@@ -624,4 +842,38 @@ module.exports = {
 
     });
   },
-};
+
+
+
+  getAllOrdersEvent: (fromDate, toDate) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let matchStage = {};
+
+        if (fromDate && toDate) {
+          const adjustedToDate = new Date(toDate);
+          adjustedToDate.setDate(adjustedToDate.getDate() + 1);
+
+          matchStage.date = {
+            $gte: new Date(fromDate),
+            $lt: adjustedToDate
+          };
+        }
+
+
+        let orders = await db.get()
+          .collection(collections.ORDER_COLLECTION)
+          .aggregate([
+            { $match: matchStage }, // ✅ Filter by date if provided
+            { $sort: { "event.title": 1, "date": 1 } } // ✅ Sort by Event Title (A-Z) and Date (Oldest First)
+          ])
+          .toArray();
+
+        resolve(orders);
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+
+}

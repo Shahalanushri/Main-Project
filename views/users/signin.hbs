@@ -1,56 +1,113 @@
 <style>
-    .card {
-        border: 0;
-        border-radius: 6px;
-        width: 300px;
-    }
+  .login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: rgb(234, 234, 234); /* Light background */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+
+  .card {
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    width: 350px; /* Increased width */
+    padding: 2rem;
+  }
+
+  .login-intro-img {
+    max-width: 150px;
+    margin-bottom: 1.5rem;
+  }
+
+  .text-center {
+    text-align: center;
+  }
+
+  h4 {
+    color: #333;
+    font-weight: 600;
+    margin-bottom: 1rem;
+  }
+
+  h6 {
+    color: #555;
+    margin-bottom: 1.5rem;
+  }
+
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
+
+  .form-control {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1rem;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+  }
+
+  .form-control:focus {
+    border-color: #007bff; /* Highlight on focus */
+    outline: none;
+  }
+
+  #password-visibility {
+    position: absolute;
+    top: 50%;
+    right: 1rem;
+    transform: translateY(-50%);
+    cursor: pointer;
+  }
+
+  .btn-light {
+    background-color: #0d0d0e; /* Primary button color */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 1rem 2rem;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+
+  .btn-light:hover {
+    background-color: #0d0e0f; /* Darker on hover */
+  }
+
+  .text-danger {
+    color: #dc3545;
+    text-align: center;
+    margin-bottom: 1rem;
+  }
 </style>
 
-<!-- Login Wrapper Area -->
-<div class="login-wrapper d-flex  align-items-center justify-content-center" style="background-color: #E4A11B;">
-    <div class="custom-container">
-        <div class="text-center px-4"><img class="login-intro-img" src="assets/img/bg-img/36.png" alt=""></div>
-        <!-- Register Form -->
-        <h4 class="text-center mb-3" style="color: white; font-weight: 600">SmartConnect<span
-                style="color: warning;"></span></h4>
-
-        <div class="card shadow p-4" style="background-color:#E4A11B;">
-
-            <div class="register-form mt-4">
-                <h6 class="mb-4 text-center" style="color: white;">Log in to continue to<br> SmartConnect</h6>
-                {{#if signInErr}}
-
-                <p class="text-danger text-center ">{{signInErr}}</p>
-
-                {{/if}}
-                <form action="/signin" method="POST" autocomplete="off">
-                    <div class="form-group">
-                        <input class="form-control" type="email" name="Email" value="{{email}}"
-                            placeholder="Your Email">
-                    </div>
-                    <div class="form-group position-relative">
-                        <input class="form-control" id="psw-input" name="Password" value="{{password}}" type="password"
-                            placeholder="Enter Password">
-                        <div class="position-absolute" id="password-visibility"><i class="bi bi-eye"></i><i
-                                class="bi bi-eye-slash"></i></div>
-                    </div>
-                    <button class="btn btn-light w-100" type="submit">Sign In</button>
-                    <a href="/signup" class="btn btn-light w-100 mt-2" type="submit">Register</a>
-                </form>
-            </div>
-            <!-- Login Meta -->
-            <div class="login-meta-data text-center">
-                {{!-- <a class="stretched-link forgot-password d-block mt-3 mb-1"
-                    href="page-forget-password.html">Forgot Password?</a> --}}
-                {{!-- <p class="mb-0 mt-3" style="font-size: 12px;">Didn't have an account? <a class="stretched-link"
-                        style="font-size: 12px;" href="/signup">Register
-                        Now</a>
-                </p> --}}
-            </div>
+<div class="login-wrapper">
+  <div class="card shadow p-4">
+    {{!-- <div class="text-center">
+      <img class="login-intro-img" src="assets/img/bg-img/36.png" alt="Login Image">
+    </div> --}}
+    <h4 class="text-center mb-3">SmartConnect</h4>
+    <div class="register-form mt-4">
+      <h6 class="text-center">Log in to continue to<br> SmartConnect</h6>
+      {{#if signInErr}}
+      <p class="text-danger">{{signInErr}}</p>
+      {{/if}}
+      <form action="/signin" method="POST" autocomplete="off">
+        <div class="form-group">
+          <input class="form-control" type="email" name="Email" value="{{email}}" placeholder="Your Email">
         </div>
-        {{!-- <a href="/">
-            <p class="text-center text-underline mt-3 ">Back to home</p>
-        </a> --}}
-
+        <div class="form-group position-relative">
+          <input class="form-control" id="psw-input" name="Password" value="{{password}}" type="password" placeholder="Enter Password">
+          <div class="position-absolute" id="password-visibility">
+            <i class="bi bi-eye"></i>
+            <i class="bi bi-eye-slash"></i>
+          </div>
+        </div>
+        <button class="btn btn-light w-100" type="submit">Sign In</button>
+        <a href="/signup" class="btn btn-light w-100 mt-2" type="submit">Register</a>
+        <a href="/tempsignin" class="btn btn-light w-100 mt-2" type="submit">Login as guest</a>
+      </form>
     </div>
+  </div>
 </div>

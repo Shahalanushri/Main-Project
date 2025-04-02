@@ -1,5 +1,4 @@
 <div class="page-content-wrapper p-2 pt-4">
-
     <div class="container">
         <div class="card">
             <div class="card-body">
@@ -7,28 +6,25 @@
                 <form action="/add-event" enctype="multipart/form-data" method="post">
                     <div class="form-group">
                         <label class="form-label" for="exampleInputText">Event Title</label>
-                        <input class="form-control" name="title" id="exampleInputText" type="text"
-                            placeholder="Enter The Title" required>
+                        <input class="form-control" name="title" type="text" placeholder="Enter The Title" required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="exampleInputText">Sub Title</label>
-                        <input class="form-control" name="subtitle" id="exampleInputText" type="text"
-                            placeholder="Enter The Sub Title" required>
+                        <input class="form-control" name="subtitle" type="text" placeholder="Enter The Sub Title"
+                            required>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="exampleInputText">Date</label>
-                        <input class="form-control" name="date" id="exampleInputText" type="date"
+                        <input class="form-control" name="date" id="bookingDate" type="date"
                             placeholder="Enter The Sub Title" required>
                     </div>
 
-
                     <div class="form-group">
-                        <label class="form-label" for="exampleInputText">Available Seats</label>
-                        <input class="form-control" name="seat" id="exampleInputText" type="number"
-                            placeholder="Enter Available Seats" required>
-                    </div>
+    <label class="form-label" for="exampleInputText">Available Seats</label>
+    <input class="form-control" name="seat" type="text" placeholder="Enter Available Seats" required>
+</div>
 
 
                     <div class="row">
@@ -36,46 +32,50 @@
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label class="form-label" for="exampleInputText">From</label>
-                                <input class="form-control" name="from" id="exampleInputText" type="time"
-                                    placeholder="Enter The Sub Title" required>
+                                <input class="form-control" name="from" type="time" required>
                             </div>
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
                                 <label class="form-label" for="exampleInputText">To</label>
-                                <input class="form-control" name="to" id="exampleInputText" type="time"
-                                    placeholder="Enter The Sub Title" required>
+                                <input class="form-control" name="to" type="time" required>
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="exampleInputText">Venue</label>
-                        <input class="form-control" name="venue" id="exampleInputText" type="text"
-                            placeholder="Enter The Venue" required>
+                        <label class="form-label" for="venueSelect">Venue</label>
+                        <select class="form-control" name="venue" id="venueSelect" required>
+                            <option value="">Select Venue</option>
+                            <option value="Ground">Ground</option>
+                            <option value="Hall">Hall</option>
+                            <option value="Anganvadi">Anganvadi</option>
+                            <option value="Others">Others</option>
+                        </select>
                     </div>
+
 
                     <div class="form-group">
                         <label class="form-label" for="exampleInputText">Ticket Price</label>
-                        <input class="form-control" name="Price" id="exampleInputText" type="text"
-                            placeholder="Enter The Ticket Price" required>
+                        <input class="form-control" name="Price" id="exampleInputText" type="number"
+                            placeholder="Enter The Ticket Price">
                     </div>
 
-
                     <div class="form-group">
-                        <label class="form-label" for="exampleTextarea1">Desc</label>
-                        <textarea class="form-control" id="exampleTextarea1" name="desc" cols="3" rows="5"
-                            placeholder="Write something..." required></textarea>
+                        <label class="form-label" for="exampleTextarea1">Description</label>
+                        <textarea class="form-control" name="desc" cols="3" rows="5" placeholder="Write something..."
+                            required></textarea>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label" for="Image">Poster</label>
-                        <input class="form-control" name="Image" id="Image" type="file" required>
+                        <input class="form-control" name="Image" accept="image/png, image/gif, image/jpeg" id="Image"
+                            type="file">
                     </div>
 
-
                     <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
-                        type="submit">Add Event
+                        type="submit">
+                        Add Event
                         <svg class="bi bi-arrow-right-short" width="24" height="24" viewBox="0 0 16 16"
                             fill="currentColor" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
@@ -88,3 +88,10 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+        document.getElementById("bookingDate").setAttribute("min", today); // Set as min date
+    });
+</script>

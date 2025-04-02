@@ -1,0 +1,102 @@
+<!-- Include Font Awesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+    body {
+        background-color: #f4f7fc;
+        font-family: 'Poppins', sans-serif;
+    }
+
+    .page-content-wrapper {
+        padding: 40px 20px;
+    }
+
+    h5 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #2c3e50;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+        background-color: #ffffff;
+        border: none;
+        text-align: center;
+        padding: 25px;
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
+        position: relative;
+        min-height: 180px;
+    }
+
+    .card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .blog-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+        color: #34495e;
+        display: block;
+        margin-top: 10px;
+    }
+
+    .blog-description {
+        font-size: 1rem;
+        color: #7f8c8d;
+        line-height: 1.6;
+        text-align: justify;
+        margin-top: 10px;
+        max-height: none; /* Ensures full visibility */
+        overflow: visible;
+    }
+
+    .blog-date {
+        font-size: 0.85rem;
+        color: #fff;
+        background-color: #2980b9;
+        padding: 5px 12px;
+        border-radius: 20px;
+        display: inline-block;
+        font-weight: 500;
+        margin-bottom: 15px;
+    }
+</style>
+
+<div class="page-content-wrapper">
+    <div class="container">
+        <h5>📢 Latest Announcements</h5>
+        <div class="row g-4 justify-content-center">
+            {{#each activities}}
+            <div class="col-12 col-md-6 col-lg-4">
+                <div class="card shadow-sm blog-list-card">
+                    <span class="blog-date">{{this.date}}</span>
+                    <span class="blog-title">{{this.title}}</span>
+                    <p class="blog-description">{{this.desc}}</p>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+
+
+
+<script>
+    function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput');
+        var filter = input.value.toUpperCase();
+        var list = document.getElementById("elementsSearchList");
+        var listItem = list.getElementsByClassName('col-6');
+
+        for (var i = 0; i < listItem.length; i++) {
+            var textValue = listItem[i].textContent || listItem[i].innerText;
+            listItem[i].style.display = textValue.toUpperCase().includes(filter) ? "" : "none";
+        }
+    }
+</script>

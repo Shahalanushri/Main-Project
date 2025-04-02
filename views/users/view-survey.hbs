@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Responses</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body>
+
+<div class="page-content-wrapper p-2 pt-4">
+    <div class="container">
+        <h2 class="text-center mb-4">Survey Responses</h2>
+
+        <!-- Search Bar -->
+        <div class="mb-3">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search surveys..." onkeyup="searchSurveys()">
+        </div>
+
+        <div class="row" id="surveyList">
+            {{#each surveys}}
+            <div class="col-md-6 col-lg-4 mb-4 survey-card">
+                <div class="card shadow">
+                    <div class="card-body">
+                        <h5 class="card-title">{{this.responses.content}}</h5>
+                        <p class="text-muted">{{this.responses.desc}}</p>
+                        <p><strong>User:</strong> {{this.user.Fname}} {{this.user.Lname}}</p>
+                        <p><strong>Email:</strong> {{this.user.Email}}</p>
+
+                        <h6 class="mt-3">Questions & Answers:</h6>
+                        <ul>
+                            <li><strong>{{this.responses.q-1}}</strong>: {{this.responses.option_0}}</li>
+                            <li><strong>{{this.responses.q-2}}</strong>: {{this.responses.option_1}}</li>
+                            <li><strong>{{this.responses.q-3}}</strong>: {{this.responses.option_2}}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Search Functionality -->
+<script>
+    function searchSurveys() {
+        var input = document.getElementById('searchInput').value.toUpperCase();
+        var cards = document.getElementsByClassName("survey-card");
+
+        for (var i = 0; i < cards.length; i++) {
+            var title = cards[i].querySelector(".card-title").innerText.toUpperCase();
+            if (title.indexOf(input) > -1) {
+                cards[i].style.display = "";
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+    }
+</script>
+
+</body>
+</html>

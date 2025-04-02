@@ -1,7 +1,15 @@
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+
+
+
 <style>
     body {
-        background-color: #E4A11B;
+        background-color: rgb(234, 234, 234);
+        color: #002147;
         height: 95vh;
+        border: 2px solid black;
     }
 
     .bg-overlay::after {
@@ -16,8 +24,12 @@
         z-index: -1;
     }
 
-    .cu-btn {
+    .cu-btn,
+    .btn-warning {
+        background-color: #f0ede8 !important;
+        color: #002147 !important;
         border-radius: 100px !important;
+        border: 2px solid black;
     }
 
     .about-img {
@@ -27,21 +39,15 @@
     .ct-btn {
         font-size: 11px;
         border-radius: 50px;
-    }
-
-    .tiny-slider-one-wrapper .single-hero-slide {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        height: 200px !important;
-        background-position: center center;
-        background-size: cover;
+        background-color: #f4f2ef;
+        color: #002147;
+        border: 2px solid black;
     }
 
     .form-control.form-control-clicked {
         background-color: hsl(0, 31%, 95%);
         border-color: #c6c6c6;
-        color: #073984;
+        color: #002147;
     }
 
     #alertBox {
@@ -49,10 +55,37 @@
         position: fixed;
         top: 20px;
         right: 20px;
-        background: red;
-        color: white;
+        background: #fcfbf9;
+        color: #002147;
         padding: 15px;
         border-radius: 5px;
+        border: 2px solid black;
+    }
+
+    .feature-card p {
+        color: #002147 !important;
+    }
+
+    .feature-card .card {
+        background-color: #fdfaf5 !important;
+        border: 2px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 80px;
+        width: 80px;
+        margin: auto;
+        border-radius: 50%;
+    }
+
+    .card {
+        background-color: #f9f9f9 !important;
+        /* Light gray background */
+        border: 2px solid black;
+        border-radius: 20px;
+        /* Curved border */
+        box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.1);
+        /* Soft shadow */
     }
 </style>
 
@@ -90,7 +123,28 @@
             aria-label="Close"></button>
     </div>
 
-    <div id="alertBox"></div>
+
+    <div id="alertBox" class="toast toast-autohide custom-toast-1 toast-danger   home-page-toast" role="alert"
+        aria-live="assertive" aria-atomic="true" data-bs-delay="7000" data-bs-autohide="true">
+        <div class="toast-body d-flex align-items-center">
+            <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="white" class="bi bi-megaphone"
+                viewBox="0 0 16 16">
+                <path
+                    d="M13 2.5a1.5 1.5 0 0 1 3 0v11a1.5 1.5 0 0 1-3 0v-.214c-2.162-1.241-4.49-1.843-6.912-2.083l.405 2.712A1 1 0 0 1 5.51 15.1h-.548a1 1 0 0 1-.916-.599l-1.85-3.49-.202-.003A2.014 2.014 0 0 1 0 9V7a2.02 2.02 0 0 1 1.992-2.013 75 75 0 0 0 2.483-.075c3.043-.154 6.148-.849 8.525-2.199zm1 0v11a.5.5 0 0 0 1 0v-11a.5.5 0 0 0-1 0m-1 1.35c-2.344 1.205-5.209 1.842-8 2.033v4.233q.27.015.537.036c2.568.189 5.093.744 7.463 1.993zm-9 6.215v-4.13a95 95 0 0 1-1.992.052A1.02 1.02 0 0 0 1 7v2c0 .55.448 1.002 1.006 1.009A61 61 0 0 1 4 10.065m-.657.975 1.609 3.037.01.024h.548l-.002-.014-.443-2.966a68 68 0 0 0-1.722-.082z" />
+            </svg>
+
+            <div class="toast-text ms-3 me-2">
+                <p id="alertMessage" class="mb-1 text-white"></p>
+                <small class="d-block"></small>
+            </div>
+        </div>
+        <button class="btn btn-close btn-close-white position-absolute p-1" type="button" data-bs-dismiss="toast"
+            aria-label="Close"></button>
+    </div>
+
+    <audio id="alertSound" src="/images/alert.mp3"></audio>
+
+
 
     <!-- Tiny Slider One Wrapper -->
     {{!-- <div class="tiny-slider-one-wrapper p-3 pt-5 pb-0 bg-warning">
@@ -137,7 +191,28 @@
                             <div class="slide-text">
                                 <h3 class="text-white">{{this.title}}</h3>
                                 <p class="text-white">{{this.desc}}</p>
-                                {{!-- <a class="btn btn-creative btn-warning" href="#">Buy Now</a> --}}
+                                <a class="btn btn-creative btn-dark" href="#">On {{this.date}}</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Single Hero Slide -->
+
+                {{/each}}
+
+
+
+                <!-- ADS -->
+
+                {{#each ads}}
+                <div>
+                    <div class="single-hero-slide bg-img bg-overlay"
+                        style="background-image: url('/images/ad-images/{{this._id}}.png')">
+                        <div class="h-100 d-flex align-items-center">
+                            <div class="slide-text">
+                                <h3 class="text-white">{{this.Name}} on {{this.defaultSelect}}</h3>
+                                <p class="text-white">{{this.Description}}</p>
+                                <a class="btn btn-creative btn-dark" href="#">By {{this.user}}</a>
                             </div>
                         </div>
                     </div>
@@ -150,8 +225,8 @@
             <div id="totaltnsDotsCount"></div>
         </div>
     </div>
-    <div class="pt-1 pb-4 bg-warning"></div>
-    <div class="container direction-rtl" id="elementsSearchList" style="background-color: #E4A11B;">
+    <div class="pt-1 pb-4" style="color: #ffff;"></div>
+    <div class="container direction-rtl" id="elementsSearchList">
         {{!-- <div class="card mb-3">
             <div class="card-body">
                 <div class="form-group mb-0 w-100">
@@ -161,83 +236,76 @@
             </div>
         </div> --}}
 
-        <div class="card mb-3 bg-warning">
-            <div class="card-body" style="background-color:#E4A11B">
 
-                <div class="row g-3 bg-warning">
-                    <div class="col-4 mb-3 ">
-                        <a href="/facilities">
+
+        <div class="card mb-3">
+
+            <div class="card-body" style="color: #c6c6c6c6;">
+                <div class="row g-3">
+                    <div class="col-4 mb-3">
+                        <a href="/alerts">
                             <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-light"><img src="/assets2/img/demo-img/bootstrap.png"
-                                        alt="">
+                                <div class="card mx-auto bg-light">
+                                    <i class="fa-solid fa-triangle-exclamation fa-3x text-warning"></i>
                                 </div>
-                                <p class="mb-0" style="color: white">Facilities</p>
+                                <p class="mb-0 mt-2">Alert</p>
                             </div>
                         </a>
                     </div>
                     <div class="col-4 mb-3">
-                        <a href="/home">
+                        <a href="/emergency">
                             <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-gray"><img src="/assets2/img/demo-img/bootstrap.png" alt="">
+                                <div class="card mx-auto bg-light">
+                                    <i class="fas fa-ambulance fa-3x" style="color: #dc3545;"></i>
                                 </div>
-                                <p class="mb-0" style="color: white">Emergency</p>
+                                <p class="mb-0 mt-2">Emergency</p>
                             </div>
                         </a>
                     </div>
                     <div class="col-4 mb-3">
                         <a href="/events">
                             <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-gray"><img src="/assets2/img/demo-img/bootstrap.png" alt="">
+                                <div class="card mx-auto bg-light">
+                                    <i class="fas fa-calendar-alt fa-3x" style="color: #077bff;"></i>
                                 </div>
-                                <p class="mb-0" style="color: white">Events</p>
+                                <p class="mb-0 mt-2">Events</p>
                             </div>
                         </a>
                     </div>
-
-                    <center>
-                        <a href="/all-services" class="btn btn-dark btn-sm mb-4">View All Serives</a>
-                    </center>
-
                 </div>
+                <center>
+                    <a href="/all-services" class="btn btn-dark btn-sm mb-4 mt-3 w-100">View All Services</a>
+                </center>
             </div>
         </div>
-    </div>
-</div>
 
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const socket = io();
+                const alertBox = document.getElementById("alertBox");
+                const alertMessage = document.getElementById("alertMessage");
+                const alertSound = document.getElementById("alertSound");
 
-<script>
-    function elementsSearch() {
-        var input = document.getElementById('elementsSearchInput');
-        var filter = input.value.toUpperCase();
-        var list = document.getElementById("elementsSearchList");
-        var listItem = list.getElementsByClassName('col-4');
+                // Remove the global body click listener
+                // Instead, play the sound only when the alert is triggered
+                socket.on("hide", (message) => {
+                    console.log("hide trigger in user");
 
-        for (i = 0; i < listItem.length; i++) {
-            var a = listItem[i];
-            var textValue = a.textContent || a.innerText;
-            if (textValue.toUpperCase().indexOf(filter) > -1) {
-                listItem[i].style.display = "";
-            } else {
-                listItem[i].style.display = "none";
-            }
-        }
-    }
+                    alertMessage.innerText = message;
+                    alertBox.style.display = "block";
 
-</script>
+                    // ✅ Play sound only when the alert is triggered
+                    alertSound.currentTime = 0; // Reset to start
+                    alertSound.play().catch(error => console.error("Error playing sound:", error));
 
+                    const toast = new bootstrap.Toast(alertBox);
+                    toast.show();
 
-{{!--
-<script>
-    const socket = io();
-    const alertBox = document.getElementById("alertBox");
+                    setTimeout(() => {
+                        console.log("hide onnnnn in user");
+                        toast.hide();
+                    }, 3000);
+                });
+            });
 
-    socket.on("receiveAlert", (message) => {
-        alertBox.innerText = message;
-        alertBox.style.display = "block";
-
-        setTimeout(() => {
-            alertBox.style.display = "none";
-        }, 5000); // Hide after 5 seconds
-    }); 
-</script>
-</div> --}}
+        </script>

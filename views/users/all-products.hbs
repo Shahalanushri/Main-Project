@@ -1,0 +1,28 @@
+<section>
+    <div class="container pt-5">
+        <br><br><br><br>
+        <div class="row">
+            <div class="col-12 mb-3">
+                <a href="/add-product" class="btn btn-success">Add a Product</a>
+            </div>
+        </div>
+        <div class="row">
+            {{#each products}}
+            <div class="col-md-4 col-lg-3 mb-4">
+                <div class="card shadow">
+                    <img src="/images/product-images/{{this._id}}.png" class="card-img-top p-3" alt="{{this.Name}}" style="height: 180px; object-fit: contain;">
+                    <div class="card-body text-center">
+                        <h5 class="card-title">{{this.Name}}</h5>
+                        <p class="card-text"><strong>Price:</strong> ${{this.Price}}</p>
+                        <p class="small text-muted">{{this.Description}}</p>
+                        <a href="/delete-product/{{this._id}}" class="btn btn-danger btn-sm"
+                           onclick="return confirm('Are you sure you want to delete {{this.Name}}?')">
+                            Delete
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</section>

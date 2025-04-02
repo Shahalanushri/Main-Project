@@ -1,0 +1,39 @@
+<section>
+    <div class="container pt-4"> <br><br><br><br>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card p-3 shadow">
+                    <h2 class="text-center">Add Product</h2>
+                    <form action="/add-ad" enctype="multipart/form-data" method="POST">
+                        <input type="hidden" name="user" value="{{user.Fname}}" required>
+                        <input type="hidden" name="phone" value="{{user.Phone}}" required>
+
+                        <label for="">Name</label>
+                        <input type="text" name="Name" class="form-control" required>
+
+
+                        <div class="form-group">
+                            <label class="form-label" for="defaultSelect"> Products</label>
+                            <select class="form-select form-control-clicked" id="defaultSelect" name="defaultSelect"
+                                aria-label="Default select example">
+                                <option value="" selected="" disabled>Select Product</option>
+                                {{#each products}}
+                                <option value="{{this.Name}}">{{this.Name}}</option>
+                                {{/each}}
+
+                            </select>
+                        </div>
+
+                        <label for="">Description</label>
+                        <input type="text" name="Description" class="form-control" required>
+
+                        <label for="">Image</label>
+                        <input type="file" name="Image" class="form-control" required>
+
+                        <button type="submit" class="btn btn-success mt-4">Submit</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

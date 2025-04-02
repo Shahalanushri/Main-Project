@@ -1,110 +1,69 @@
 <style>
-    .bg-overlay::after {
-        position: absolute;
-        content: '';
-        background-color: #000000b5;
-        opacity: 0.75;
-        top: 0;
-        left: 0;
-        height: 100%;
+    .gallery-card {
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+        margin-bottom: 15px;
+        transition: 0.3s ease-in-out;
+    }
+
+    .gallery-card:hover {
+        transform: scale(1.02);
+    }
+
+    .gallery-card img {
         width: 100%;
-        z-index: -1;
+        height: 200px;
+        object-fit: cover;
+        border-bottom: 2px solid #ddd;
     }
 
-    .cu-btn {
-        border-radius: 100px !important;
+    .gallery-card-body {
+        padding: 10px;
+        text-align: center;
     }
 
-    .about-img {
-        border-radius: 20px;
-    }
-
-    .ct-btn {
-        font-size: 11px;
-        border-radius: 50px;
-    }
-
-    .tiny-slider-one-wrapper .single-hero-slide {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        height: 200px !important;
-        background-position: center center;
-        background-size: cover;
-    }
-
-    .form-control.form-control-clicked {
-        background-color: hsl(0, 31%, 95%);
-        border-color: #c6c6c6;
-        color: #073984;
+    .edit-btn {
+        background-color: #28a745;
+        color: white;
+        font-size: 12px;
+        padding: 5px 10px;
+        border-radius: 5px;
+        display: inline-block;
+        margin-top: 5px;
     }
 </style>
 
 <div class="page-content-wrapper p-2 pt-4">
-    <div class="">
+    <div class="container mt-4">
         <div class="card">
             <div class="card-body">
-                <p>Manage Galleries</p>
+                <p class="fw-bold">Manage Galleries</p>
                 <a href="/add-gallery" class="btn btn-dark btn-sm mb-4">+ Add Gallery</a>
-                {{!-- <a href="/calender" class="btn btn-dark btn-sm mb-4">View Gallery Calender</a> --}}
-                <div class="table-responsive">
-                    <table class="w-100" id="dataTable">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Title</th>
-                                <th>Category</th>
-                                <th>Desc</th>
 
-                                {{!-- <th>Venue</th>
-                                <th>Available Seats</th>
-                                <th>Ticket Price</th> --}}
-                                <th>Manage</th>
+                <div class="row">
+                    {{#each galleries}}
+                    <div class="col-md-4">
+                        <div class="gallery-card">
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each galleries}}
-                            <tr>
-                                <td><img src="/images/gallery-images/{{this._id}}.png" width="50px" alt=""></td>
 
-                                <td><b>{{this.title}}</b> </td>
+                            <img src="/images/gallery-images/{{this._id}}.png" alt="Gallery Image">
 
-                                <td>{{this.Category}}</td>
-                                <td>{{this.desc}}</td>
 
-                                {{!-- <td><a href="/delete-gallery/{{this._id}}" class="btn btn-danger">Delete</a></td> --}}
-                            </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
+
+
+
+                            <div class="gallery-card-body">
+                                <h6><b>{{this.title}}</b></h6>
+                                <p>{{this.desc}}</p>
+                                {{!-- <a href="/edit-gallery/{{this._id}}" class="edit-btn">Edit</a> --}}
+                                <a href="/add-photos/{{this._id}}" class="edit-btn">Add Photos</a>
+                            </div>
+                        </div>
+                    </div>
+                    {{/each}}
                 </div>
             </div>
         </div>
     </div>
-</div>
-
-
-<script>
-    function elementsSearch() {
-        var input = document.getElementById('elementsSearchInput');
-        var filter = input.value.toUpperCase();
-        var list = document.getElementById("elementsSearchList");
-        var listItem = list.getElementsByClassName('col-4');
-
-        for (i = 0; i < listItem.length; i++) {
-            var a = listItem[i];
-            var textValue = a.textContent || a.innerText;
-            if (textValue.toUpperCase().indexOf(filter) > -1) {
-                listItem[i].style.display = "";
-            } else {
-                listItem[i].style.display = "none";
-            }
-        }
-    }
-
-</script>
-
-
-
 </div>

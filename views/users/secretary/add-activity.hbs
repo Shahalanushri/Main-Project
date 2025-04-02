@@ -24,7 +24,7 @@
                             required>
                             <option value="" selected disabled>Select User</option>
                             <option value="All Users">All Users</option>
-                            <option value="Residence">Residence</option>
+                            {{!-- <option value="Residence">Residence</option> --}}
                             <option value="Treasurer">Treasurer</option>
                             <option value="Secretary">Secretary
                             </option>
@@ -66,3 +66,11 @@
         </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let dateInput = document.querySelector('input[name="date"]');
+        let today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
+        dateInput.setAttribute("min", today); // Set minimum date to today
+    });
+</script>

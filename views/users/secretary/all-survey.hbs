@@ -1,0 +1,104 @@
+<div class="page-content-wrapper p-2 pt-4">
+    <div class="">
+        <div class="card">
+            <div class="card-body">
+                <p>Manage Survey</p>
+                <a href="/add-survey" class="btn btn-dark btn-sm mb-4">+ Add Survey</a>
+                <a href="/view-survey" class="btn btn-primary btn-sm mb-4">View Results</a>
+
+                {{!-- <a href="/calender" class="btn btn-dark btn-sm mb-4">View Survey Calender</a> --}}
+
+                <div class="row">
+                    {{#each survey}}
+                    <div class="col-12">
+                        <div class="card p-4 mb-4 shadow">
+                            <b>{{this.title}}</b> <br>
+                            <b>Date:</b> {{this.date}} <br>
+
+                            <hr>
+
+                            <b>{{this.content}}</b>
+                            <p>{{this.desc}}
+                            </p>
+                            {{#if this.options}}
+                            <b>Options:</b>
+
+                            {{#each this.options}}
+
+                            <div class="card p-2 shadow mb-2 ">
+                                <p class="mt-3"> <b>Option {{incremented @index}}</b> - {{this}}</p>
+                            </div>
+
+                            {{/each}}
+
+                            {{/if}}
+
+                            <a href="/delete-survey/{{this._id}}" class="btn btn-danger mt-3">Delete</a>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+
+
+
+                {{!-- <div class="table-responsive">
+                    <table class="w-100" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Image</th>
+                                <th>Facilitie Title</th>
+                                <th>Date & Time</th>
+                                <th>Venue</th>
+                                <th>Available Seats</th>
+                                <th>Ticket Price</th>
+                                <th>Manage</th>
+
+                                <!-- Search Bar -->
+                                <div class="mb-3">
+                                    <input type="text" id="elementsSearchInput" class="form-control"
+                                        placeholder="Search survey..." onkeyup="elementsSearch()">
+                                </div>
+
+                                <div class="row" id="elementsSearchList">
+                                    {{#each survey}}
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card">
+                                            <img src="/images/survey-images/{{this._id}}.png" class="card-img-top"
+                                                alt="{{this.title}}" style="height: 200px; object-fit: cover;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{this.title}}</h5>
+                                                <p class="card-text"><b>Venue:</b> {{this.venue}}</p>
+                                                <p class="card-text"><b>Date:</b> {{this.date}}</p>
+                                                <p class="card-text"><b>Time:</b> {{this.from}} - {{this.to}}</p>
+                                                <p class="card-text"><b>Seats Available:</b> {{this.seat}}</p>
+                                                <p class="card-text"><b>Price:</b> Rs.{{this.Price}}/-</p>
+
+                                                <td><a href="/delete-facilitie/{{this._id}}"
+                                                        class="btn btn-danger">Delete</a></td>
+                            </tr>
+                            {{/each}}
+                            </tbody>
+                    </table>
+                </div> --}}
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- JavaScript for Search Functionality -->
+<script>
+    function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput').value.toUpperCase();
+        var cards = document.getElementById("elementsSearchList").getElementsByClassName("col-md-4");
+
+        for (var i = 0; i < cards.length; i++) {
+            var title = cards[i].querySelector(".card-title").innerText.toUpperCase();
+            if (title.indexOf(input) > -1) {
+                cards[i].style.display = "";
+            } else {
+                cards[i].style.display = "none";
+            }
+        }
+    }
+</script>

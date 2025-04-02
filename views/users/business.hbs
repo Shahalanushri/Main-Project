@@ -1,0 +1,318 @@
+<div class="page-content-wrapper p-5">
+
+    <div class="container-lg">
+        <div class="d-flex justify-content-between mb-4">
+            <h4>All Products</h4>
+            <a href="/all-products" class="btn btn-success mt-2">Manage Your Product</a>
+        </div>
+        <div class="row">
+
+            {{#each products}}
+            <div class="col-lg-4 mb-3">
+                <div class="card position-relative shadow-sm">
+                    <img class="card-img-top" src="/images/product-images/{{this._id}}.png" alt="">
+                    <span class="badge bg-warning text-dark position-absolute card-badge">{{this.date}}</span>
+                    <div class="card-body direction-rtl">
+                        <h2>{{this.Name}}</h2>
+                        <p>{{this.Description}}</p>
+                        <p class="mb-2">Rs.{{this.Price}}/-</p>
+                        <hr>
+                        <p><b>By : </b>{{this.user}}</p>
+                        <p><b>Phone Number : </b>{{this.phone}}</p>
+
+                        {{!-- <button class="btn btn-dark view-details" data-bs-toggle="modal"
+                            data-bs-target="#bookNowModal" data-title="{{this.title}}" data-desc="{{this.desc}}"
+                            data-seats="{{this.availability}}" data-price="{{this.Price}}">
+                            Book Now
+                        </button> --}}
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+
+
+
+
+
+    </div>
+</div>
+
+
+
+<!--  Modal For Others -->
+<div class="modal fade" id="bookNowModal" tabindex="-1" aria-labelledby="bookNowModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="bookingForm" action="/book-now" method="POST">
+                <div class="modal-header">
+                    {{#if user}}
+                    <input type="hidden" name="userId" value="{{user._id}}">
+                    <input type="hidden" name="username" value="{{user.Fname}}">
+                    <input type="hidden" name="useremail" value="{{user.Email}}">
+                    <input type="hidden" name="userphone" value="{{user.Phone}}">
+                    <input type="hidden" name="useraddress" value="{{user.Address}}">
+                    {{/if}}
+
+                    <h5 class="modal-title" id="modalTitle"> Event Title</h5>
+                    <input type="hidden" name="title" id="hiddenTitle">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Details:</h6>
+                    <p id="modalDesc" class="mb-1">Event Description</p>
+                    <input type="hidden" name="desc" id="hiddenDesc">
+
+                    <p class="mb-1"><b>Available :</b> <span id="modalSeats"></span></p>
+                    <input type="hidden" name="seats" id="hiddenSeats">
+
+                    {{!-- <p class="mb-1"><b>Price:</b> Rs. <span id="modalPrice"></span>/-</p> --}}
+                    <input type="hidden" name="price" id="hiddenPrice">
+
+                    <hr>
+                    <div class="form-group">
+                        <label class="mb-2">Quantity</label>
+                        <input class="form-control" type="number" name="count" required placeholder="Enter Quantity">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="mb-2">Date</label>
+                        <input class="form-control" type="date" name="date" id="bookingDate" required>
+                    </div>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary">Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!--  Modal For Pool -->
+<div class="modal fade" id="Pool" tabindex="-1" aria-labelledby="PoolLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="bookingForm" action="/book-now-pool" method="POST">
+                <div class="modal-header">
+                    {{#if user}}
+                    <input type="hidden" name="userId" value="{{user._id}}">
+                    <input type="hidden" name="username" value="{{user.Fname}}">
+                    <input type="hidden" name="useremail" value="{{user.Email}}">
+                    <input type="hidden" name="userphone" value="{{user.Phone}}">
+                    <input type="hidden" name="useraddress" value="{{user.Address}}">
+                    {{/if}}
+
+                    <h5 class="modal-title" id="modalTitle"> Pool Booking</h5>
+                    <input type="hidden" name="title" id="hiddenTitle">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Details:</h6>
+                    <p id="modalDesc" class="mb-1">Event Description</p>
+                    <input type="hidden" name="desc" id="hiddenDesc">
+
+                    <label>Select Time Slot:</label>
+                    <select id="timeSlot" class="form-select" name="timeSlot" required>
+                        <option selected disabled>Select slot</option>
+                        <option value="slot1">10:00 - 11:00</option>
+                        <option value="slot2">12:00 - 1:00</option>
+                        <option value="slot3">2:00 - 3:00</option>
+                        <option value="slot4">4:00 - 5:00</option>
+                        <option value="slot5">5:00 - 6:00</option>
+                        <option value="slot6">7:00 - 8:00</option>
+                    </select>
+
+                    <label>Persons Count:</label>
+                    <input type="number" name="personCount" id="personCount" min="1" max="10" class="form-control"
+                        required>
+
+                    <p class="mt-2"><b>Available Slots:</b> <span id="modalSeats" class="text-primary"> </span></p>
+                    <input type="hidden" name="seats" id="hiddenSeats">
+
+                    <button type="button" id="checkAvailabilityBtn" class="btn btn-primary">Check Availability</button>
+
+                    <hr>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="confirmBookingBtn" class="btn btn-success" disabled>Confirm
+                        Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{!-- POOOOOOL --}}
+<script>
+    document.getElementById("checkAvailabilityBtn").addEventListener("click", async function () {
+        const timeSlot = document.getElementById("timeSlot").value;
+        const personCount = document.getElementById("personCount").value;
+        const modalSeats = document.getElementById("modalSeats");
+        const confirmBookingBtn = document.getElementById("confirmBookingBtn");
+
+        if (!timeSlot || timeSlot === "Select slot") {
+            alert("Please select a valid time slot.");
+            return;
+        }
+
+        if (!personCount || personCount < 1 || personCount > 10) {
+            alert("Please enter a valid number of persons (1-10).");
+            return;
+        }
+
+        try {
+            const response = await fetch(`/check-pool-availability?timeSlot=${timeSlot}&personCount=${personCount}`);
+            const data = await response.json();
+            console.log(data, "$$$$$$$$$$$$$$$$$$$$$$$$$$$", modalSeats)
+
+            if (data.availableSlots === 0) {
+                modalSeats.innerHTML = `<span class="text-danger">Slot is fully booked!</span>`;
+                alert("Slot is fully booked!")
+                confirmBookingBtn.disabled = true;
+            } else if (data.availableSlots < personCount) {
+                modalSeats.innerHTML = `<span class="text-warning">Only ${data.availableSlots} slots available</span>`;
+                confirmBookingBtn.disabled = true;
+                alert(`Only ${data.availableSlots} slots available`)
+            } else {
+                modalSeats.innerHTML = `<span class="text-success">${data.availableSlots} slots available</span>`;
+                confirmBookingBtn.disabled = false;
+                alert(`${data.availableSlots} slots available`)
+            }
+        } catch (error) {
+            console.error("Error*** checking availability:", error);
+            modalSeats.innerHTML = `<span class="text-danger">Error checking availability</span>`;
+        }
+    });
+</script>
+
+
+
+<script>
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const bookNowButtons = document.querySelectorAll(".view-details");
+
+        bookNowButtons.forEach(button => {
+            const seats = parseInt(button.getAttribute("data-seats")); // Convert to integer
+
+            if (seats === 0) {
+                button.textContent = "Not Available"; // Change button text
+                button.classList.add("btn-danger"); // Optional: Change color to red
+                button.disabled = true; // Disable the button
+            }
+
+            button.addEventListener("click", function () {
+                if (seats > 0) {
+                    // Get event data from button attributes
+                    const title = this.getAttribute("data-title");
+                    const desc = this.getAttribute("data-desc");
+                    const price = this.getAttribute("data-price");
+
+                    // Populate modal with event details
+                    document.getElementById("modalTitle").textContent = title;
+                    document.getElementById("modalDesc").textContent = desc;
+                    document.getElementById("modalSeats").textContent = seats;
+
+                    // Set form hidden inputs
+                    document.getElementById("hiddenTitle").value = title;
+                    document.getElementById("hiddenDesc").value = desc;
+                    document.getElementById("hiddenSeats").value = seats;
+                    document.getElementById("hiddenPrice").value = price;
+
+                    // Store available seats for validation
+                    document.getElementById("bookingForm").setAttribute("data-max-seats", seats);
+                }
+            });
+        });
+
+        // Validate count before form submission
+        document.getElementById("bookingForm").addEventListener("submit", function (event) {
+            const maxSeats = parseInt(this.getAttribute("data-max-seats"));
+            const countInput = this.querySelector("input[name='count']");
+            const enteredCount = parseInt(countInput.value);
+
+            if (enteredCount > maxSeats) {
+                alert(`Only ${maxSeats} seats are available. Please enter a valid quantity.`);
+                event.preventDefault();
+            } else if (enteredCount <= 0) {
+                alert("Please enter a valid quantity greater than 0.");
+                event.preventDefault();
+            }
+        });
+    });
+
+
+</script>
+
+
+
+
+
+
+
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const buyNowButtons = document.querySelectorAll('.buy-now');
+
+        buyNowButtons.forEach(button => {
+            const seatsAvailable = parseInt(button.getAttribute('data-seats'), 10);
+
+            if (seatsAvailable === 0) {
+                button.disabled = true; // Disable the button if sold out
+                button.textContent = 'Sold Out'; // Change the button text
+                button.classList.add('disabled'); // Optionally add a disabled class for styling
+            } else {
+                button.addEventListener('click', function () {
+                    buyNow(button.getAttribute('data-id')); // Call the buyNow function
+                });
+            }
+        });
+    });
+
+    function buyNow(eventId) {
+        // Your buy now logic here, for example:
+        alert('Buying event with ID: ' + eventId);
+        // Implement your purchase logic (e.g., make an API call)
+    }
+</script>
+
+<script>
+    function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput');
+        var filter = input.value.toUpperCase();
+        var list = document.getElementById("elementsSearchList");
+        var listItem = list.getElementsByClassName('col-6');
+
+        for (i = 0; i < listItem.length; i++) {
+            var a = listItem[i];
+            var textValue = a.textContent || a.innerText;
+            if (textValue.toUpperCase().indexOf(filter) > -1) {
+                listItem[i].style.display = "";
+            } else {
+                listItem[i].style.display = "none";
+            }
+        }
+    }
+
+</script>
+<script>
+    function buyNow(eventId) {
+        window.location.href = '/place-order/' + eventId;
+    }
+
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+        document.getElementById("bookingDate").setAttribute("min", today); // Set as min date
+    });
+</script>

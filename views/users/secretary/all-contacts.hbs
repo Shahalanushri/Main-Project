@@ -1,103 +1,155 @@
+<!-- Add Font Awesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 <style>
-    .bg-overlay::after {
-        position: absolute;
-        content: '';
-        background-color: #000000b5;
-        opacity: 0.75;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        z-index: -1;
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
     }
 
-    .cu-btn {
-        border-radius: 100px !important;
+    .container {
+        max-width: 900px;
     }
 
-    .about-img {
-        border-radius: 20px;
+    .card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background: white;
+        padding: 20px;
     }
 
-    .ct-btn {
-        font-size: 11px;
-        border-radius: 50px;
+    .contact-card {
+        border-radius: 12px;
+        transition: all 0.3s ease-in-out;
+        border: none;
+        background: white;
+        box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
     }
 
-    .tiny-slider-one-wrapper .single-hero-slide {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        height: 200px !important;
-        background-position: center center;
-        background-size: cover;
+    .contact-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.15);
     }
 
-    .form-control.form-control-clicked {
-        background-color: hsl(0, 31%, 95%);
-        border-color: #c6c6c6;
-        color: #073984;
+    .contact-icon {
+        font-size: 22px;
+        color: white;
+        padding: 12px;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .contact-type-phone {
+        background-color: #28a745;
+    }
+
+    .contact-type-email {
+        background-color: #007bff;
+    }
+
+    .contact-type-other {
+        background-color: #6c757d;
+    }
+
+    .contact-card .btn-danger {
+        border-radius: 8px;
+        transition: 0.3s ease;
+    }
+
+    .contact-card .btn-danger:hover {
+        background-color: #dc3545;
+        transform: scale(1.05);
+    }
+
+    .btn-dark {
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-dark:hover {
+        background: #343a40;
+        transform: scale(1.05);
+    }
+
+    .alert {
+        border-radius: 10px;
+        padding: 15px;
+        background: #ffe5e5;
+        color: #b71c1c;
+        font-weight: 500;
     }
 </style>
 
-<div class="page-content-wrapper p-2 pt-4">
+<div class="page-content-wrapper p-3">
     <div class="container">
         <div class="card">
             <div class="card-body">
-                <p>Manage Emergency Contacts</p>
-                <a href="/add-contact" class="btn btn-dark btn-sm mb-4">+ Add Emergency Contact</a>
-                <div class="table-responsive">
+                <h4 class="mb-3">📞 Manage Emergency Contacts</h4>
+                <a href="/add-contact" class="btn btn-dark btn-sm mb-4"><i class="fa-solid fa-plus"></i> Add Contact</a>
 
-                    <table class="w-100" id="dataTable">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Contact Type</th>
-                                <th>Contact Info</th>
-                                <th>Manage</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each contacts}}
-                            <tr>
-                                <td>{{this.name}}</td>
-
-                                <td>{{this.type}}</td>
-                                <td>{{this.info}} </td>
-                                <td><a href="/delete-contact/{{this._id}}" class="btn btn-danger">Delete</a></td>
-                            </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
+                {{#if contacts.length}}
+                <div class="row">
+                    {{#each contacts}}
+                    <div class="col-md-6 mb-3">
+                        <div class="card contact-card p-3">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon 
+                                    {{#if (eq this.type 'Phone')}} contact-type-phone 
+                                    {{else if (eq this.type 'Email')}} contact-type-email 
+                                    {{else}} contact-type-other {{/if}}">
+                                    <i class="{{#if (eq this.type 'Phone')}} fa-solid fa-phone 
+                                       {{else if (eq this.type 'Email')}} fa-solid fa-envelope 
+                                       {{else}} fa-solid fa-user {{/if}}"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0">{{this.name}}</h6>
+                                    <p class="text-muted mb-1">{{this.type}}</p>
+                                    <p class="mb-0"><strong>{{this.info}}</strong></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <a href="javascript:void(0);" onclick="deleteContact('{{this._id}}')"
+                                class="btn btn-danger btn-sm w-100">
+                                <i class="fa-solid fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                    {{/each}}
                 </div>
-
+                {{else}}
+                <div class="alert text-center">
+                    <h5 class="alert-heading">🚨 No Emergency Contacts Found</h5>
+                    <p class="mb-0">Add an emergency contact to manage them here.</p>
+                </div>
+                {{/if}}
             </div>
         </div>
     </div>
 </div>
 
-
 <script>
-    function elementsSearch() {
-        var input = document.getElementById('elementsSearchInput');
-        var filter = input.value.toUpperCase();
-        var list = document.getElementById("elementsSearchList");
-        var listItem = list.getElementsByClassName('col-4');
-
-        for (i = 0; i < listItem.length; i++) {
-            var a = listItem[i];
-            var textValue = a.textContent || a.innerText;
-            if (textValue.toUpperCase().indexOf(filter) > -1) {
-                listItem[i].style.display = "";
-            } else {
-                listItem[i].style.display = "none";
-            }
+    function deleteContact(contactId) {
+        if (confirm("Are you sure you want to delete this contact?")) {
+            fetch(`/delete-contact/${contactId}`, { method: 'GET' })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload(); // Reload the page after successful delete
+                    } else {
+                        alert("❌ Failed to delete contact.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
         }
     }
-
 </script>
 
-
-
-</div>
+<!-- FontAwesome Icons -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>

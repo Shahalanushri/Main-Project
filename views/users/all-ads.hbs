@@ -1,0 +1,43 @@
+<section>
+    <div class="container pt-5">
+        <br><br><br><br>
+        <div class="row">
+            <div class="card p-3 shadow">
+                <div class="col-12">
+                    <a href="/add-ad" class="btn btn-success ">Add New Ad</a>
+                </div>
+                <div class="table-responsive-md mt-2">
+                    <table class="table responsive border table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">No.</th>
+                                <th scope="col">Name</th>
+                                {{!-- <th scope="col">Price</th> --}}
+                                <th scope="col">Description</th>
+                                <th scope="col">Image</th>
+                                {{!-- <th scope="col">Edit</th> --}}
+                                <th scope="col">Delete</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each ads}}
+                            <tr class="align-middle">
+                                <th scope="row">{{incremented @index}}</th>
+                                <td>{{this.Name}}</td>
+                                {{!-- <td>{{this.Price}}</td> --}}
+                                <td>{{this.Description}}</td>
+                                <td><img src="/images/ad-images/{{this._id}}.png" alt="" style="width: 3rem"></td>
+                                {{!-- <td><a href="/admin/edit-product/{{this._id}}" class="btn btn-primary">Edit</a>
+                                </td> --}}
+                                <td><a href="/delete-ad/{{this._id}}" class="btn btn-danger"
+                                        onclick="return confirm('Are You Sure to Delete {{this.Name}} ?')">Delete</a>
+                                </td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

@@ -95,9 +95,9 @@ Created: December 10, 2020
 }
 
 .bg-smart {
-  background-color: #e4a11b !important;
+  background-color: rgb(255, 255, 255) !important;
+  color:#000;
 }
-
 .text-smart {
   color: #e4a11b !important;
 }

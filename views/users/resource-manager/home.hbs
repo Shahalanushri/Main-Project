@@ -98,6 +98,10 @@
     <div class="pt-3 pb-4"></div>
     <div class="container-lg">
         <h6>Manage Bookings</h6>
+        <div class="mb-4 mt-2">
+            <a href="/reset-hall-availability" class="btn btn-danger">Reset Hall Availability</a>
+            <a href="/reset-pool-availability" class="btn btn-danger">Reset Pool Availability</a>
+        </div>
 
         {{#each bookings}}
         <div class="card shadow mb-2">
@@ -106,7 +110,7 @@
                 <hr>
                 <h6>Item Details</h6>
                 <p class="mb-1">Quantity : {{this.count}}</p>
-                <p class="mb-1">Rate Per {{this.title}} : {{this.price}}/-</p>
+                {{!-- <p class="mb-1">Rate Per {{this.title}} : {{this.price}}/-</p> --}}
 
                 <hr>
                 <h6>User Details</h6>

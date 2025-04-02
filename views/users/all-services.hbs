@@ -1,97 +1,81 @@
+<!-- Include Font Awesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
 <style>
     body {
-        background-color: #E4A11B;
+        background-color: rgb(234, 234, 234);
     }
+
+    .page-content-wrapper {
+        padding: 20px;
+    }
+
+    .card {
+        border-radius: 10px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .single-product-card:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+        font-size: 40px;
+        margin-bottom: 10px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .feature-card:hover .feature-icon {
+        transform: scale(1.1);
+    }
+
+    /* Icon Colors */
+    .facilities {
+        color: #007bff;
+    }
+
+    /* Blue */
+    .emergency {
+        color: #dc3545;
+    }
+
+    /* Red */
+    .events {
+        color: #17a2b8;
+    }
+
+    /* Teal */
+    .gallery {
+        color: #ffc107;
+    }
+
+    /* Yellow */
+    .maintenance {
+        color: #28a745;
+    }
+
+    /* Green */
+    .survey {
+        color: #6610f2;
+    }
+
+    /* Purple */
+    .business {
+        color: #fd7e14;
+    }
+
+    /* Orange */
+    .alerts {
+        color: #6c757d;
+    }
+
+    /* Gray */
 </style>
 
 <div class="page-content-wrapper">
-    {{!-- <div class="container">
-        <div class="card mb-3 pt-5 bg-warning">
-            <div class="card-body" style="background-color:#E4A11B">
-
-                <div class="row g-3 bg-warning">
-                    <div class="col-4 mb-3 ">
-                        <a href="/home">
-                            <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-light"><img src="/assets2/img/demo-img/bootstrap.png"
-                                        alt="">
-                                </div>
-                                <p class="mb-0" style="color: white">Facilities</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-4 mb-3">
-                        <a href="/home">
-                            <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-gray"><img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </div>
-                                <p class="mb-0" style="color: white">Emergency</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-4 mb-3">
-                        <a href="/events">
-                            <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-gray"><img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </div>
-                                <p class="mb-0" style="color: white">Events</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-4 mb-3">
-                        <a href="/home">
-                            <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-gray"><img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </div>
-                                <p class="mb-0" style="color: white">Gallery</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-4 mb-3">
-                        <a href="/home">
-                            <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-gray"><img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </div>
-                                <p class="mb-0" style="color: white">Maintenance</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-4 mb-3">
-                        <a href="/home">
-                            <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-gray"><img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </div>
-                                <p class="mb-0" style="color: white">Survey</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-4 mb-3">
-                        <a href="/home">
-                            <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-gray"><img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </div>
-                                <p class="mb-0" style="color: white">Business</p>
-                            </div>
-                        </a>
-                    </div>
-                    <div class="col-4 mb-3">
-                        <a href="/home">
-                            <div class="feature-card mx-auto text-center">
-                                <div class="card mx-auto bg-gray"><img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </div>
-                                <p class="mb-0" style="color: white">Alerts</p>
-                            </div>
-                        </a>
-                    </div>
-
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div> --}}
-
-    <div class="top-products-area pt-5 pb-5">
-        <div class="container">
+    <div class="container">
+        <div class="top-products-area pt-4 pb-4" id="elementsSearchList">
             <div class="card mb-3">
                 <div class="card-body p-3">
                     <div class="form-group mb-0">
@@ -101,136 +85,93 @@
                 </div>
             </div>
             <div class="row g-3">
-                <!-- Single Top Product Card -->
+                <!-- Services Grid -->
                 <div class="col-6 col-sm-4 col-lg-3">
-                    <div class="card single-product-card">
+                    <div class="card single-product-card text-center">
                         <div class="card-body p-3">
-                            <a class=" justify-content-center mb-3 d-block" href="">
-                                <center>
-                                    <img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </center>
-                            </a>
-                            <!-- Product Title --><a class="product-title d-block text-center"
-                                href="page-shop-details.html">Facilities</a>
-                            <!-- Product Price -->
-
+                            <i class="fa-solid fa-building feature-icon facilities"></i>
+                            <a class="product-title d-block" href="/facilities">Facilities</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-6 col-sm-4 col-lg-3">
-                    <div class="card single-product-card">
+                    <div class="card single-product-card text-center">
                         <div class="card-body p-3">
-                            <a class=" justify-content-center mb-3 d-block" href="">
-                                <center>
-                                    <img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </center>
-                            </a>
-                            <!-- Product Title --><a class="product-title d-block text-center"
-                                href="page-shop-details.html">Emergency</a>
-                            <!-- Product Price -->
-
+                            <i class="fa-solid fa-ambulance feature-icon emergency"></i>
+                            <a class="product-title d-block" href="/emergency">Emergency</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-6 col-sm-4 col-lg-3">
-                    <div class="card single-product-card">
+                    <div class="card single-product-card text-center">
                         <div class="card-body p-3">
-                            <a class=" justify-content-center mb-3 d-block" href="">
-                                <center>
-                                    <img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </center>
-                            </a>
-                            <!-- Product Title --><a class="product-title d-block text-center" href="/events">Events</a>
-                            <!-- Product Price -->
-
+                            <i class="fa-solid fa-calendar-alt feature-icon events"></i>
+                            <a class="product-title d-block" href="/events">Events</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-6 col-sm-4 col-lg-3">
-                    <div class="card single-product-card">
+                    <div class="card single-product-card text-center">
                         <div class="card-body p-3">
-                            <a class=" justify-content-center mb-3 d-block" href="/gallery">
-                                <center>
-                                    <img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </center>
-                            </a>
-                            <!-- Product Title --><a class="product-title d-block text-center"
-                                href="/gallery">Gallery</a>
-                            <!-- Product Price -->
-
+                            <i class="fa-solid fa-images feature-icon gallery"></i>
+                            <a class="product-title d-block" href="/gallery">Gallery</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-6 col-sm-4 col-lg-3">
-                    <div class="card single-product-card">
+                    <div class="card single-product-card text-center">
                         <div class="card-body p-3">
-                            <a class=" justify-content-center mb-3 d-block" href="">
-                                <center>
-                                    <img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </center>
-                            </a>
-                            <!-- Product Title --><a class="product-title d-block text-center"
-                                href="page-shop-details.html">Maintenance</a>
-                            <!-- Product Price -->
-
+                            <i class="fa-solid fa-tools feature-icon maintenance"></i>
+                            <a class="product-title d-block" href="/main">Maintenance</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-6 col-sm-4 col-lg-3">
-                    <div class="card single-product-card">
+                    <div class="card single-product-card text-center">
                         <div class="card-body p-3">
-                            <a class=" justify-content-center mb-3 d-block" href="">
-                                <center>
-                                    <img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </center>
-                            </a>
-                            <!-- Product Title --><a class="product-title d-block text-center"
-                                href="page-shop-details.html">Survey</a>
-                            <!-- Product Price -->
-
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="col-6 col-sm-4 col-lg-3">
-                    <div class="card single-product-card">
-                        <div class="card-body p-3">
-                            <a class=" justify-content-center mb-3 d-block" href="">
-                                <center>
-                                    <img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </center>
-                            </a>
-                            <!-- Product Title --><a class="product-title d-block text-center"
-                                href="page-shop-details.html">Business</a>
-                            <!-- Product Price -->
-
+                            <i class="fa-solid fa-poll feature-icon survey"></i>
+                            <a class="product-title d-block" href="/survey">Survey</a>
                         </div>
                     </div>
                 </div>
 
                 <div class="col-6 col-sm-4 col-lg-3">
-                    <div class="card single-product-card">
+                    <div class="card single-product-card text-center">
                         <div class="card-body p-3">
-                            <a class=" justify-content-center mb-3 d-block" href="">
-                                <center>
-                                    <img src="/assets2/img/demo-img/bootstrap.png" alt="">
-                                </center>
-                            </a>
-                            <!-- Product Title --><a class="product-title d-block text-center"
-                                href="page-shop-details.html">Alerts</a>
-                            <!-- Product Price -->
-
+                            <i class="fa-solid fa-store feature-icon business"></i>
+                            <a class="product-title d-block" href="/business">Business</a>
                         </div>
                     </div>
                 </div>
 
+                <div class="col-6 col-sm-4 col-lg-3">
+                    <div class="card single-product-card text-center">
+                        <div class="card-body p-3">
+                            <i class="fa-solid fa-bell feature-icon alerts"></i>
+                            <a class="product-title d-block" href="/alerts">Alerts</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput');
+        var filter = input.value.toUpperCase();
+        var list = document.getElementById("elementsSearchList");
+        var listItem = list.getElementsByClassName('col-6');
+
+        for (var i = 0; i < listItem.length; i++) {
+            var textValue = listItem[i].textContent || listItem[i].innerText;
+            listItem[i].style.display = textValue.toUpperCase().includes(filter) ? "" : "none";
+        }
+    }
+</script>

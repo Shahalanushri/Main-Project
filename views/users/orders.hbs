@@ -56,35 +56,25 @@
 </section> --}}
 
 
-<br><br>
 <div class="container-md mt-3 p-5">
     <h4 class="mb-3">Your Event Bookings</h4>
 
     {{#if orders}}
-
     <div class="row">
         {{#each orders}}
-        <div class="col-6 ">
-            <div class="card single-product-card">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="card-side-img">
-                            <!-- Product Thumbnail--><a class="product-thumbnail d-block" href="#!"><img
-                                    src="/images/event-images/{{this.event._id}}.png" alt="" width="200px">
-                                <!-- Badge--><span class="badge bg-primary">{{this.status}}</span></a>
-                        </div>
-                        <div class="card-content px-4 py-2">
-                            <!-- Product Title--><a class="product-title d-block text-truncate mt-0"
-                                href="#!">{{this.event.title}}</a>
-                            <!-- Product Price-->
-                            <p class="">{{this.event.desc}}</p>
-                            {{!-- <!-- Add To Cart Button--><a class="btn btn-dark"
-                                href="/view-ordered-events/{{this._id}}">
-                                View Details</a> --}}
-                            <a href="javascript:void(0);" onclick="canelorder('{{this._id}}')" class="btn btn-danger">
-                                Cancel Booking
-                            </a>
-                        </div>
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center">
+                        <img src="/images/event-images/{{this.event._id}}.png" class="img-fluid rounded" alt=""
+                            style="max-width: 100%; height: 200px; object-fit: cover;">
+                    </div>
+                    <h5 class="mt-3 text-truncate">{{this.event.title}}</h5>
+                    <p class="text-muted">{{this.event.desc}}</p>
+                    <div class="mt-auto">
+                        <a href="/cancel-order/{{this._id}}"
+                            onclick="return confirm('Are You Sure to Cancel This Booking ?')"
+                            class="btn btn-danger">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -93,53 +83,39 @@
     </div>
 
     {{else}}
-    <br><br><br>
-    <div class="container mt-5">
-        <div class="alert alert-secondary" role="alert">
-            <h4 class="alert-heading">You Have Booked Nothing!</h4>
-            <hr>
-            <p class="mb-0">You need to book a event</p>
-        </div>
-        <a href="/home" class="btn btn-primary w-25">Book Now</a>
+    <div class="alert alert-secondary text-center">
+        <h4>You Have Booked Nothing!</h4>
+        <p>Book an event now.</p>
+        <a href="/home" class="btn btn-primary">Book Now</a>
     </div>
     {{/if}}
 </div>
 
-
-
-<div class="container-md mt-0 mb-5 p-5">
-    <h4 class="mb-3">Your Facilitie Bookings</h4>
+<div class="container-md mt-3 p-5">
+    <h4 class="mb-3">Your Facility Bookings</h4>
 
     {{#if bookings}}
-
     <div class="row">
         {{#each bookings}}
-        <div class="col-4 mb-3">
-            <div class="card single-product-card">
-                <div class="card-body">
-                    <div class="d-flex align-items-center">
-                        <div class="card-side-img">
-                            <!-- Product Thumbnail--><a class="product-thumbnail d-block" href="#!"><img
-                                    src="/images/event-images/{{this.event._id}}.png" alt="" width="200px">
-                                <!-- Badge--><span class="badge bg-primary">{{this.status}}</span></a>
-                        </div>
-                        <div class="card-content px-4 py-2">
-                            <!-- Product Title--><a class="product-title d-block text-truncate mt-0"
-                                href="#!">{{this.title}}</a>
-                            <hr>
-                            <!-- Product Price-->
-                            <p class="mb-1">Price : {{this.price}}/-</p>
-                            <p class="mb-1">Quantity : {{this.count}}</p>
-                            <p class="mb-1">Date : {{this.date}}</p>
-                            <br>
-
-                            {{!-- <!-- Add To Cart Button--><a class="btn btn-dark"
-                                href="/view-ordered-events/{{this._id}}">
-                                View Details</a> --}}
-                            <a href="javascript:void(0);" onclick="canelbooking('{{this._id}}')" class="btn btn-danger">
-                                Cancel Booking
-                            </a>
-                        </div>
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex flex-column">
+                    <div class="text-center">
+                        <img src="/images/event-images/{{this.event._id}}.png" class="img-fluid rounded" alt=""
+                            style="max-width: 100%; height: 200px; object-fit: cover;">
+                    </div>
+                    <h5 class="mt-3 text-truncate">{{this.title}}</h5>
+                    {{!-- <p>Price: ₹{{this.price}}</p> --}}
+                    <p>Quantity: {{this.count}}</p>
+                    <p>Date: {{this.date}}</p>
+                    {{!-- <div class="mt-auto">
+                        <button onclick="canelbooking('{{this._id}}')" class="btn btn-danger w-100">Cancel
+                            Booking</button>
+                    </div> --}}
+                    <div class="mt-auto">
+                        <a href="/cancel-booking/{{this._id}}"
+                            onclick="return confirm('Are You Sure to Cancel This Booking ?')"
+                            class="btn btn-danger">Cancel</a>
                     </div>
                 </div>
             </div>
@@ -148,77 +124,10 @@
     </div>
 
     {{else}}
-    <br><br><br>
-    <div class="container mt-5">
-        <div class="alert alert-secondary" role="alert">
-            <h4 class="alert-heading">You Have Booked Nothing!</h4>
-            <hr>
-            <p class="mb-0">You need to book a facility</p>
-        </div>
-        <a href="/facilities" class="btn btn-primary w-25">Book Now</a>
+    <div class="alert alert-secondary text-center">
+        <h4>You Have Booked Nothing!</h4>
+        <p>Book a facility now.</p>
+        <a href="/facilities" class="btn btn-primary">Book Now</a>
     </div>
     {{/if}}
 </div>
-
-<script>
-    function canelorder(id) {
-        Swal.fire({
-            title: `Are you sure to cancel this order?`,
-            text: '',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#33ff68',
-            cancelButtonColor: '#d29eee',
-            confirmButtonText: 'Yes!',
-            cancelButtonText: 'No'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Redirect to the delete route if confirmed
-                window.location.href = `/cancel-order/${id}`;
-            }
-        });
-    }
-</script>
-
-
-
-
-
-
-<!-- Cancel Booking Modal -->
-<div class="modal fade" id="cancelBookingModal" tabindex="-1" aria-labelledby="cancelBookingModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Cancel Booking</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Are you sure you want to cancel this booking?</p>
-                <p>Is there any cracked product? If yes, enter the quantity below:</p>
-                <input type="number" id="crackedQuantity" class="form-control" placeholder="Enter cracked quantity">
-                <input type="hidden" id="cancelBookingId">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-                <button type="button" class="btn btn-danger" id="confirmCancelBooking">Yes, Cancel</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script>
-    function canelbooking(id) {
-        document.getElementById("cancelBookingId").value = id;
-        var cancelModal = new bootstrap.Modal(document.getElementById("cancelBookingModal"));
-        cancelModal.show();
-    }
-
-    document.getElementById("confirmCancelBooking").addEventListener("click", function () {
-        let bookingId = document.getElementById("cancelBookingId").value;
-        let crackedCount = document.getElementById("crackedQuantity").value || 0; // Default to 0 if empty
-
-        window.location.href = `/cancel-booking/${bookingId}?cracked=${crackedCount}`;
-    });
-</script>

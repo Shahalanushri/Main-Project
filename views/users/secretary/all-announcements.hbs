@@ -39,48 +39,34 @@
         color: #073984;
     }
 </style>
-
 <div class="page-content-wrapper p-2 pt-4">
-    <div class="">
-        <div class="card">
-            <div class="card-body">
-                <p>Manage Announcements</p>
-                <a href="/add-activity" class="btn btn-dark btn-sm mb-4">+ Add Announcement</a>
-                {{!-- <a href="/calender" class="btn btn-dark btn-sm mb-4">View Event Calender</a> --}}
-                <div class="table-responsive">
-                    <table class="w-100" id="dataTable">
-                        <thead>
-                            <tr>
-                                <th>Date</th>
-                                <th>Image</th>
-                                <th>Title</th>
-                                <th>Desc</th>
-                                <th>To</th>
-                                <th>Manage</th>
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5>Manage Announcements</h5>
+            <a href="/add-activity" class="btn btn-dark btn-sm">+ Add Announcement</a>
+        </div>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each activities}}
-                            <tr>
-                                <td>{{this.date}}</td>
-                                <td><img src="/images/activity-images/{{this._id}}.png" width="50px" alt=""></td>
-
-                                <td><b>{{this.title}}</b></td>
-
-                                <td>{{this.desc}}</td>
-                                <td>{{this.to}}</td>
-
-                                <td><a href="/delete-activity/{{this._id}}" class="btn btn-danger">Delete</a></td>
-                            </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
+        <div class="row">
+            {{#each activities}}
+            <div class="col-md-4 mb-3">
+                <div class="card shadow-sm">
+                    <img src="/images/activity-images/{{this._id}}.png" class="card-img-top" alt="Announcement Image" style="height: 180px; object-fit: cover;">
+                    <div class="card-body">
+                        <h6 class="card-title"><b>{{this.title}}</b></h6>
+                        <p class="card-text">{{this.desc}}</p>
+                        <small class="text-muted">For: {{this.to}}</small><br>
+                        <small class="text-muted">Date: {{this.date}}</small>
+                        <div class="mt-3 d-flex justify-content-between">
+                            <a href="/delete-activity/{{this._id}}" class="btn btn-danger btn-sm">Delete</a>
+                        </div>
+                    </div>
                 </div>
             </div>
+            {{/each}}
         </div>
     </div>
 </div>
+
 
 
 <script>

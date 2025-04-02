@@ -5,35 +5,98 @@
         <hr>
         <div class="row">
             {{#each facilities}}
+            {{#unless (eq this.title "Pool")}} <!-- Hide if title is "Pool" -->
             <div class="col-lg-4 mb-3">
-                <div class="card position-relative shadow-sm"><img class="card-img-top"
-                        src="/images/facilitie-images/{{this._id}}.png" alt=""><span
-                        class="badge bg-warning text-dark position-absolute card-badge">{{this.date}}</span>
+                <div class="card position-relative shadow-sm">
+                    <img class="card-img-top" src="/images/facilitie-images/{{this._id}}.png" alt="">
+                    <span class="badge bg-warning text-dark position-absolute card-badge">{{this.date}}</span>
                     <div class="card-body direction-rtl">
                         <h2>{{this.title}}</h2>
                         <p>{{this.desc}}</p>
                         <p class="mb-2"><b>Available :</b> {{this.availability}}</p>
-                        <button class="btn btn-success mb-3"><b>Price :</b> Rs.{{this.Price}}/-</button> <br>
+                        {{#if (eq this.title "Hall")}}
+                                <p class="mb-2"><b>Slot 1 (6:00 am - 11:00 am) :</b> {{this.slot1}}</p>
+                                <p class="mb-2"><b>Slot 2 (12:00 am - 5:00 pm) :</b> {{this.slot2}}</p>
+                                <p class="mb-2"><b>Slot 3 (6:00 pm- 11:00 pm) :</b> {{this.slot3}}</p>
 
+                                <button class="btn btn-dark view-details" data-bs-toggle="modal" data-bs-target="#Hall"
+                            data-title="{{this.title}}" data-desc="{{this.desc}}" data-seats="{{this.availability}}"
+                            data-price="{{this.Price}}">
+                            Book Now
+                        </button>
+                        
+                        {{else}}
                         <button class="btn btn-dark view-details" data-bs-toggle="modal" data-bs-target="#bookNowModal"
-                            data-title={{this.title}} data-desc="{{this.desc}}" data-seats={{this.availability}}
+                            data-title="{{this.title}}" data-desc="{{this.desc}}" data-seats="{{this.availability}}"
                             data-price="{{this.Price}}">
                             Book Now
                         </button>
 
+                        {{/if}}
+
+                        
                     </div>
                 </div>
             </div>
+            {{/unless}}
             {{/each}}
-
         </div>
+
+
+        <div class="row">
+            {{#each facilities}}
+            {{#if (eq this.title "Pool")}} <!-- Show only if title is "Pool" -->
+            <div class="col-lg-4 mb-3">
+
+                <div class="card single-product-card">
+                    <div class="card-body">
+                       <div class="card position-relative shadow-sm">
+                            
+                                <!-- Product Thumbnail--><a class="product-thumbnail d-block" href="#!"><img
+                                        src="/images/facilitie-images/{{this._id}}.png" class="card-img-top" alt="">
+                                    <!-- Badge--><span class="badge bg-primary">{{this.date}}</span></a>
+                            
+                            <div class="card-content px-4 py-2">
+                                <!-- Product Title--><a class="product-title d-block text-truncate mt-0"
+                                    href="#!">{{this.title}}</a>
+                                <p>{{this.desc}}</p>
+                                <!-- Product Price-->
+                                <p class="mb-2"><b>Slot 1 (10:00 - 11:00) :</b> {{this.slot1}}</p>
+                                <p class="mb-2"><b>Slot 2 (12:00 - 1:00) :</b> {{this.slot2}}</p>
+                                <p class="mb-2"><b>Slot 3 (2:00 - 3:00) :</b> {{this.slot3}}</p>
+                                <p class="mb-2"><b>Slot 4 (4:00 - 5:00) :</b> {{this.slot4}}</p>
+                                <p class="mb-2"><b>Slot 5 (5:00 - 6:00) :</b> {{this.slot5}}</p>
+                                <p class="mb-2"><b>Slot 6 (7:00 - 8:00) :</b> {{this.slot6}}</p>
+
+                                <button class="btn btn-dark view-pool" data-bs-toggle="modal" data-bs-target="#Pool"
+                                    data-title="{{this.title}}" data-desc="{{this.desc}}" data-seats="{{this.slot1}}"
+                                    data-price="{{this.Price}}">
+                                    Book Now 
+                                </button>
+                                
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </div>
+            {{/if}}
+            {{/each}}
+        </div>
+
+        
+
+
 
     </div>
 </div>
 
 
 
-<!-- Bootstrap Modal -->
+<!--  Modal For Others -->
 <div class="modal fade" id="bookNowModal" tabindex="-1" aria-labelledby="bookNowModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -47,19 +110,19 @@
                     <input type="hidden" name="useraddress" value="{{user.Address}}">
                     {{/if}}
 
-                    <h5 class="modal-title" id="modalTitle"> Event Title</h5>
+                    {{!-- <h5 class="modal-title" id="modalTitle"> Event Title</h5> --}}
                     <input type="hidden" name="title" id="hiddenTitle">
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <h6>Details:</h6>
+                    {{!-- <h6>Details:</h6>
                     <p id="modalDesc" class="mb-1">Event Description</p>
-                    <input type="hidden" name="desc" id="hiddenDesc">
+                    <input type="hidden" name="desc" id="hiddenDesc"> --}}
 
                     <p class="mb-1"><b>Available :</b> <span id="modalSeats"></span></p>
                     <input type="hidden" name="seats" id="hiddenSeats">
 
-                    <p class="mb-1"><b>Price:</b> Rs. <span id="modalPrice"></span>/-</p>
+                    {{!-- <p class="mb-1"><b>Price:</b> Rs. <span id="modalPrice"></span>/-</p> --}}
                     <input type="hidden" name="price" id="hiddenPrice">
 
                     <hr>
@@ -70,8 +133,9 @@
 
                     <div class="form-group">
                         <label class="mb-2">Date</label>
-                        <input class="form-control" type="date" name="date" required>
+                        <input class="form-control" type="date" name="date" id="bookingDate" required>
                     </div>
+
 
                 </div>
                 <div class="modal-footer">
@@ -82,6 +146,186 @@
         </div>
     </div>
 </div>
+
+
+<!--  Modal For Pool -->
+<div class="modal fade" id="Pool" tabindex="-1" aria-labelledby="PoolLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="bookingForm" action="/book-now-pool" method="POST">
+                <div class="modal-header">
+                    {{#if user}}
+                    <input type="hidden" name="userId" value="{{user._id}}">
+                    <input type="hidden" name="username" value="{{user.Fname}}">
+                    <input type="hidden" name="useremail" value="{{user.Email}}">
+                    <input type="hidden" name="userphone" value="{{user.Phone}}">
+                    <input type="hidden" name="useraddress" value="{{user.Address}}">
+                    {{/if}}
+
+                    <h5 class="modal-title" id="modalTitle"> Pool Booking</h5>
+                    <input type="hidden" name="title" id="hiddenTitle">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Details:</h6>
+                    {{!-- <p id="modalDesc" class="mb-1">Event Description</p> --}}
+                    <input type="hidden" name="desc" id="hiddenDesc">
+                    
+                    <label>Select Time Slot:</label>
+                    <select id="timeSlot" class="form-select" name="timeSlot" required>
+                        <option selected disabled>Select slot</option>
+                        <option value="slot1">10:00 - 11:00</option>
+                        <option value="slot2">12:00 - 1:00</option>
+                        <option value="slot3">2:00 - 3:00</option>
+                        <option value="slot4">4:00 - 5:00</option>
+                        <option value="slot5">5:00 - 6:00</option>
+                        <option value="slot6">7:00 - 8:00</option>
+                    </select>
+
+                    <label>Persons Count:</label>
+                    <input type="number" name="personCount" id="personCount" min="1" max="10" class="form-control" required>
+
+                    <p class="mt-2"><b>Available Slots:</b> <span id="modalSeats" class="text-primary"> </span></p>
+                    <input type="hidden" name="seats" id="hiddenSeats">
+
+                    <button type="button" id="checkAvailabilityBtn" class="btn btn-primary">Check Availability</button>
+
+                    <hr>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="confirmBookingBtn" class="btn btn-success" disabled>Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="Hall" tabindex="-1" aria-labelledby="PoolLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form id="bookingForm" action="/book-now-hall" method="POST">
+                <div class="modal-header">
+                    {{#if user}}
+                    <input type="hidden" name="userId" value="{{user._id}}">
+                    <input type="hidden" name="username" value="{{user.Fname}}">
+                    <input type="hidden" name="useremail" value="{{user.Email}}">
+                    <input type="hidden" name="userphone" value="{{user.Phone}}">
+                    <input type="hidden" name="useraddress" value="{{user.Address}}">
+                    {{/if}}
+
+                    <h5 class="modal-title" id="modalTitle"> Hall Booking</h5>
+                    <input type="hidden" name="title" id="hiddenTitle">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <h6>Details:</h6>
+                    <p id="modalDesc" class="mb-1">Event Description</p>
+                    <input type="hidden" name="desc" id="hiddenDesc">
+                    
+                    <label>Select Time Slot:</label>
+                    <select id="timeSlot1" class="form-select" name="timeSlot" required>
+                        <option selected disabled>Select slot</option>
+                        <option value="slot1">Slot 1 (6:00 am - 11:00 am) </option>
+                        <option value="slot2">Slot 2 (10:00 pm - 05:00 pm)</option>
+                        <option value="slot3">Slot 3 (6:00 pm - 11:00 am)</option>
+                    </select>
+
+
+                    <p class="mt-2"><b>Available Slots:</b> <span id="modalSeats1" class="text-primary"> </span></p>
+                    <input type="hidden" name="seats" id="hiddenSeats">
+
+                    <button type="button" id="checkHallAvailabilityBtn" class="btn btn-primary">Check Availability</button>
+
+                    <hr>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" id="confirmHallBookingBtn" class="btn btn-success" disabled>Confirm Booking</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+{{!-- POOOOOOL --}}
+<script>
+document.getElementById("checkAvailabilityBtn").addEventListener("click", async function() {
+    const timeSlot = document.getElementById("timeSlot").value;
+    const personCount = document.getElementById("personCount").value;
+    const modalSeats = document.getElementById("modalSeats");
+    const confirmBookingBtn = document.getElementById("confirmBookingBtn");
+
+    if (!timeSlot || timeSlot === "Select slot") {
+        alert("Please select a valid time slot.");
+        return;
+    }
+
+    if (!personCount || personCount < 1 || personCount > 10) {
+        alert("Please enter a valid number of persons (1-10).");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/check-pool-availability?timeSlot=${timeSlot}&personCount=${personCount}`);
+        const data = await response.json();
+        console.log(data,"$$$$$$$$$$$$$$$$$$$$$$$$$$$",modalSeats)
+
+        if (data.availableSlots === 0) {
+            modalSeats.innerHTML = `<span class="text-danger">Slot is fully booked!</span>`;
+            alert("Slot is fully booked!")
+            confirmBookingBtn.disabled = true;
+        } else if (data.availableSlots < personCount) {
+            modalSeats.innerHTML = `<span class="text-warning">Only ${data.availableSlots} slots available</span>`;
+            confirmBookingBtn.disabled = true;
+            alert(`Only ${data.availableSlots} slots available`)
+        } else {
+            modalSeats.innerHTML = `<span class="text-success">${data.availableSlots} slots available</span>`;
+            confirmBookingBtn.disabled = false;
+            alert(`${data.availableSlots} slots available`)
+        }
+    } catch (error) {
+        console.error("Error*** checking availability:", error);
+        modalSeats.innerHTML = `<span class="text-danger">Error checking availability</span>`;
+    }
+});
+</script>
+<script>
+document.getElementById("checkHallAvailabilityBtn").addEventListener("click", async function() {
+    const timeSlot = document.getElementById("timeSlot1").value;
+    const modalSeats = document.getElementById("modalSeats");
+    const confirmBookingBtn = document.getElementById("confirmHallBookingBtn");
+
+    if (!timeSlot || timeSlot === "Select slot") {
+        alert("Please select a valid time slot.");
+        return;
+    }
+
+
+    try {
+        const response = await fetch(`/check-hall-availability?timeSlot=${timeSlot}`);
+        const data = await response.json();
+        console.log(data,"$$$$$$$$$$$$$$$$$$$$$$$$$$$",modalSeats)
+
+        if (data.availableSlots === "booked") {
+            modalSeats.innerHTML = `<span class="text-danger">Slot is booked!</span>`;
+            alert("Slot is  booked!")
+            confirmBookingBtn.disabled = true;
+        } else if (data.availableSlots < personCount) {
+            modalSeats.innerHTML = `<span class="text-warning">Only ${data.availableSlots} slots available</span>`;
+            confirmBookingBtn.disabled = true;
+            alert(`Only ${data.availableSlots} slots available`)
+        } else {
+            modalSeats.innerHTML = `<span class="text-success">${data.availableSlots} slots available</span>`;
+            confirmBookingBtn.disabled = false;
+            alert(`${data.availableSlots} slots available`)
+        }
+    } catch (error) {
+        console.error("Error*** checking availability:", error);
+        modalSeats.innerHTML = `<span class="text-danger">Error checking availability</span>`;
+    }
+});
+</script>
 
 
 
@@ -110,7 +354,6 @@
                     document.getElementById("modalTitle").textContent = title;
                     document.getElementById("modalDesc").textContent = desc;
                     document.getElementById("modalSeats").textContent = seats;
-                    document.getElementById("modalPrice").textContent = price;
 
                     // Set form hidden inputs
                     document.getElementById("hiddenTitle").value = title;
@@ -142,6 +385,11 @@
 
 
 </script>
+
+
+
+
+
 
 
 
@@ -197,4 +445,11 @@
         window.location.href = '/place-order/' + eventId;
     }
 
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        let today = new Date().toISOString().split("T")[0]; // Get today's date in YYYY-MM-DD format
+        document.getElementById("bookingDate").setAttribute("min", today); // Set as min date
+    });
 </script>

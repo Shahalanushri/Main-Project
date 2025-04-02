@@ -84,6 +84,9 @@
   {{/if}}
 
 
+
+
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
   {{{body}}}
 
   <script>
@@ -120,6 +123,15 @@
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
   <script>
     const socket = io();
+  </script> --}}
+  {{!--
+  <script>
+    const socket = io();
+
+    socket.on('hide', () => { //recive hide 
+      console.log(' socket.on hiideeeeeennnnnnnn')
+      //alert("trigggerrr")
+    });
   </script> --}}
 </body>
 

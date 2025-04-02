@@ -10,6 +10,39 @@
         </nav>
     </div><!-- End Page Title -->
 
+    <div class="container">
+        <h4>User Registration Trend</h4>
+        <canvas id="userRegistrationChart"></canvas>
+    </div>
+
+    <br>
+
+
+        
+    <div class="container mt-5">
+        <h4>Facility Booking Trend (Tables & Chairs)</h4>
+    <canvas id="bookingChartCategory1"></canvas> 
+    </div>
+
+     <div class="container mt-5">
+        <h4>Facility Booking Trend (Pool & Hall)</h4>
+    <canvas id="bookingChartCategory2"></canvas>  <!-- Pool & Hall -->
+    </div>
+
+    {{!-- <div class="container mt-5">
+        <h4>Events Trend</h4>
+        <canvas id="eventChart"></canvas>
+    </div> --}}
+
+
+    <div class="container mt-5">
+        <h4>Events Participation Trend (Tables & Chairs)</h4>
+<canvas id="paymentChart"></canvas>
+    </div>
+
+
+
+
     {{!-- <textarea id="alertMessage" placeholder="Enter alert message"></textarea>
     <button id="sendAlert">Send Alert</button> --}}
 
@@ -19,9 +52,6 @@
 <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
         class="bi bi-arrow-up-short"></i></a>
 
-
-{{!--
-<script src="/socket.io/socket.io.js"></script> --}}
 
 <script>
     // ✅ Ensure socket connection
@@ -38,4 +68,200 @@
             .then(data => console.log("Response:", data))
             .catch(error => console.error("Error:", error));
     });
+</script>
+
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const userRegistrationData = {{{ json userRegistrationData }}};
+
+    const labels = userRegistrationData.map(u => {
+        const [year, month] = u._id.split("-");
+        return new Date(year, month - 1).toLocaleString("default", { month: "long", year: "numeric" });
+    });
+
+    const data = userRegistrationData.map(u => u.count);  // Number of users per month
+
+    const ctx = document.getElementById("userRegistrationChart").getContext("2d");
+    new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "New Users per Month",
+                data: data,
+                borderColor: "#36A2EB",
+                backgroundColor: "rgba(54, 162, 235, 0.2)",
+                borderWidth: 2,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: {
+                    title: { display: true, text: "Month" }
+                },
+                y: {
+                    title: { display: true, text: "Number of Users" }
+                }
+            }
+        }
+    });
+    });
+</script>
+
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const bookings = {{{ json bookings }}}; // Convert JSON data from Handlebars
+
+        // Categories
+        const category1 = ["Table", "Chairs"];
+        const category2 = ["Pool", "Hall"];
+
+        // Filter bookings into two categories
+        const bookingsCategory1 = bookings.filter(b => category1.includes(b.title));
+        const bookingsCategory2 = bookings.filter(b => category2.includes(b.title));
+
+        // Extract labels for each category
+        const labelsCategory1 = category1;
+        const labelsCategory2 = category2;
+
+        // Count bookings for each category
+        const dataCategory1 = labelsCategory1.map(label =>
+            bookingsCategory1.filter(b => b.title === label).length
+        );
+
+        const dataCategory2 = labelsCategory2.map(label =>
+            bookingsCategory2.filter(b => b.title === label).length
+        );
+
+        // Chart 1: Tables & Chairs
+        const ctx1 = document.getElementById("bookingChartCategory1").getContext("2d");
+        new Chart(ctx1, {
+            type: "bar",
+            data: {
+                labels: labelsCategory1,
+                datasets: [{
+                    label: "Total Bookings (Tables & Chairs)",
+                    data: dataCategory1,
+                    backgroundColor: ["#FF6384", "#36A2EB"],
+                    borderColor: "#333",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Chart 2: Pool & Hall
+        const ctx2 = document.getElementById("bookingChartCategory2").getContext("2d");
+        new Chart(ctx2, {
+            type: "bar",
+            data: {
+                labels: labelsCategory2,
+                datasets: [{
+                    label: "Total Bookings (Pool & Hall)",
+                    data: dataCategory2,
+                    backgroundColor: ["#FFCE56", "#4BC0C0"],
+                    borderColor: "#333",
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    });
+</script>
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const events = {{{ json events }}}; // Convert JSON data from Handlebars
+
+    // Extract event names and seat count
+    const labels = events.map(e => e.title); // Event names
+    const data = events.map(e => e.seat);   // Available seats
+
+    const ctx = document.getElementById("eventChart").getContext("2d");
+    new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Available Seats",
+                data: data,
+                borderColor: "#36A2EB",
+                backgroundColor: "rgba(54, 162, 235, 0.2)",
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4  // Smooth curves
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: "top" }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+});
+</script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // Parse the JSON data safely
+    const payments = JSON.parse(`{{{ json payments }}}`);
+
+    // Extract event titles (X-axis)
+    const labels = payments.map(p => p._id);
+
+    // Extract total participants per event (Y-axis)
+    const data = payments.map(p => p.totalParticipants);
+
+    const ctx = document.getElementById("paymentChart").getContext("2d");
+    new Chart(ctx, {
+        type: "line",
+        data: {
+            labels: labels,
+            datasets: [{
+                label: "Total Participants",
+                data: data,
+                backgroundColor: "#36A2EB",
+                borderColor: "#1E88E5",
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                x: { title: { display: true, text: "Event Title" } },
+                y: { 
+                    title: { display: true, text: "Number of Participants" },
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+});
 </script>

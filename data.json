@@ -1,0 +1,51 @@
+{
+    "_id": {
+      "$oid": "67ce60cd3b3cdd38242deec0"
+    },
+    "title": "Pool",
+    "availability": 2,
+    "desc": "This pool is a refreshing and well-designed space, perfect for swimming, relaxation, and social gatherings, offering a comfortable and enjoyable experience. Its worth is ₹1 lakh.",
+    "Price": {
+      "$numberDouble": "NaN"
+    },
+    "availableSlots": []
+  }
+  
+  
+
+  {
+    "_id": {
+      "$oid": "67ce60cd3b3cdd38242deec0"
+    },
+    "title": "Pool",
+    "desc": "This pool is a refreshing and well-designed space, perfect for swimming, relaxation, and social gatherings, offering a comfortable and enjoyable experience. Its worth is ₹1 lakh.",
+    "price": 0,
+    "availability": 60,
+    "availableSlots": {
+      "10:00 - 11:00": 10,
+      "12:00 - 1:00": 10,
+      "2:00 - 3:00": 10,
+      "4:00 - 5:00": 10,
+      "5:00 - 6:00": 10,
+      "7:00 - 8:00": 10
+    }
+  }
+
+
+
+
+  {
+    "_id": {
+      "$oid": "67ce60cd3b3cdd38242deec0"
+    },
+    "title": "Pool",
+    "desc": "This pool is a refreshing and well-designed space, perfect for swimming, relaxation, and social gatherings, offering a comfortable and enjoyable experience. Its worth is ₹1 lakh.",
+    "price": 0,
+    "availability": 60,
+    "slot1": 10,
+    "slot2": 10,
+    "slot3": 10,
+    "slot4": 10,
+    "slot5": 10,
+    "slot6": 10
+  }

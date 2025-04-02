@@ -1,32 +1,77 @@
 <style>
     .page-content-wrapper {
         height: 100vh;
+        background-color: rgb(234, 234, 234);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .card {
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        background-color: white;
+    }
+
+    .btn-gradient {
+        background: linear-gradient(135deg, #1565c0, #42a5f5);
+        border: none;
+        font-weight: bold;
+        padding: 12px;
+        border-radius: 8px;
+        transition: all 0.3s ease-in-out;
+        color: white;
+        width: 100%;
+    }
+
+    .btn-gradient:hover {
+        background: linear-gradient(135deg, #0d47a1, #1e88e5);
+        transform: translateY(-2px);
+    }
+
+    .element-heading {
+    position: absolute;
+    top: 70px; /* Adjust this value as needed */
+    left: 50%;
+    font-weight: bolder;
+    transform: translateX(-50%);
+    text-align: center;
+    width: 100%;
+}
+    
+
+    .plan-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px;
+        border-radius: 8px;
+        border: 1px solid #ddd;
     }
 </style>
-<div class="page-content-wrapper mt-0 bg-warning">
+
+<div class="page-content-wrapper">
     <div class="container">
-        <!-- Element Heading -->
-        <div class="element-heading pt-5 mb-3">
-            <h3 class="mb-4 text-white">Registration Fee</h3>
+        <div class="element-heading text-center">
+            <h3 class="text-dark">Registration Fee</h3>
         </div>
-    </div>
-    <div class="container">
-        <div class="card">
+
+        <div class="card p-4">
             <div class="card-body">
-                <div class="single-plan-check shadow-sm active-effect">
-                    <div class="form-check mb-0">
-                        <input class="form-check-input" type="radio" checked name="planChoose" id="Silver Plan" />
-                        <label class="form-check-label" for="Silver Plan mb-4" style="color:#E4A11B ;">
+                <div class="plan-container">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" checked name="planChoose" id="Silver Plan">
+                        {{!-- <label class="form-check-label ms-2" for="Silver Plan">
                             Silver Plan
-                        </label>
+                        </label> --}}
                     </div>
-                    <h5 class="mt-2 mb-4 text-warning">Rs.500/-</h5>
+                    <h5 class="text-warning mb-0">Rs. 500/-</h5>
                 </div>
             </div>
         </div>
-        <!-- Include userId as a hidden field -->
+
         <input type="hidden" id="userId" value="{{user._id}}" />
-        <button class="btn btn-dark mt-3 btn-lg" id="pay-now-btn" data-amount="500">
+        <button class="btn btn-gradient mt-3 btn-lg" id="pay-now-btn" data-amount="500">
             Continue
         </button>
     </div>
@@ -36,33 +81,29 @@
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     document.getElementById('pay-now-btn').addEventListener('click', async () => {
-        const userId = document.getElementById('userId').value; // Get userId from the hidden field
-        const amount = document.getElementById('pay-now-btn').getAttribute('data-amount'); // Registration Fee amount
+        const userId = document.getElementById('userId').value;
+        const amount = document.getElementById('pay-now-btn').getAttribute('data-amount');
 
         try {
-            // Step 1: Create an order on the server
             const response = await fetch('/create-order', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, amount }), // Pass userId and amount to the server
+                body: JSON.stringify({ userId, amount }),
             });
 
             const { success, order } = await response.json();
 
             if (success) {
-                // Step 2: Configure Razorpay options
                 const options = {
-                    key: "rzp_test_8NokNgt8cA3Hdv", // Replace with your Razorpay Key ID
-                    amount: order.amount, // Amount in currency subunits (50000 = 500 INR)
+                    key: "rzp_test_8NokNgt8cA3Hdv",
+                    amount: order.amount,
                     currency: "INR",
                     name: "SmartConnect",
                     description: "Registration Fee",
                     image: "https://example.com/your_logo",
-                    order_id: order.id, // Razorpay order ID from the server
+                    order_id: order.id,
                     handler: async function (paymentResponse) {
-                        // Payment Success Handler
                         try {
-                            // Step 3: Send payment details to the server
                             const verifyResponse = await fetch('/verify', {
                                 method: 'POST',
                                 headers: { 'Content-Type': 'application/json' },
@@ -71,14 +112,13 @@
                                     paymentId: paymentResponse.razorpay_payment_id,
                                     orderId: paymentResponse.razorpay_order_id,
                                     signature: paymentResponse.razorpay_signature,
-                                    amount, // Send the amount for confirmation
+                                    amount,
                                 }),
                             });
 
                             const verifyResult = await verifyResponse.json();
 
                             if (verifyResult.success) {
-                                // Redirect to /home on successful verification
                                 window.location.href = '/pending-approval';
                             } else {
                                 alert('Payment verification failed. Please contact support.');
@@ -89,13 +129,12 @@
                         }
                     },
                     prefill: {
-                        name: 'shahala nushri', // Optionally set default values
+                        name: 'shahala nushri',
                         email: 'shahala@example.com',
                         contact: '8156867466',
                     },
                 };
 
-                // Open Razorpay Payment Interface
                 const razorpayInstance = new Razorpay(options);
                 razorpayInstance.open();
             } else {

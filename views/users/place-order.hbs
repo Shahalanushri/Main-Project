@@ -1,3 +1,5 @@
+import { prototype } from "express-handlebars/lib/express-handlebars";
+
 <div class="page-content-wrapper py-3"><br>
     <div class="container-lg">
         <!-- Checkout Wrapper -->
@@ -20,24 +22,6 @@
                                     <input class="form-control mb-3" type="number" name="Phone" value={{user.Phone}}
                                         placeholder="Your Number">
                                 </div>
-                                {{!-- <div class="form-group">
-                                    <input class="form-control mb-3" type="email" name="Email" value={{user.Email}}
-                                        placeholder="Your email">
-                                </div> --}}
-
-                                {{!-- <div class="form-group">
-                                    <input class="form-control mb-3" type="text" name="Pincode" value={{user.Pincode}}
-                                        placeholder="Postcode or ZIP">
-                                </div>
-                                <div class="form-group">
-                                    <input class="form-control mb-3" type="text" name="District" value={{user.District}}
-                                        placeholder="Street address">
-                                </div> --}}
-
-                                {{!-- <div class="form-group">
-                                    <input class="form-control mb-3" type="text" name="City" value={{user.City}}
-                                        placeholder="City">
-                                </div> --}}
                                 <div class="form-group">
                                     <textarea class="form-control mb-3" id="notes" name="Address" cols="30" rows="10"
                                         placeholder="Address">{{user.Address}}</textarea>
@@ -54,31 +38,45 @@
                                 <div class="mb-2"><b>Event Name :</b> {{event.title}}<br></div>
                                 <div class="mb-2"><b>Price :</b> {{event.Price}}/-<br></div>
                                 <hr>
-                                <div class="mb-2"><b>Total Price :</b> <span class="text-danger">{{event.Price}}</span>
-                                    /-<br></div>
+                                <div class="mb-2"><b>Total Price :</b> <span id="total-price"
+                                        class="text-danger">{{event.Price}}</span> /-</div>
 
-                            </h6>
+                                <div class="form-group">
+                                    {{!-- <label><b>Seats</b></label>
+                                    <input class="form-control rounded-3 shadow-sm p-2" type="number" id="seatCount"
+                                        name="seats" value="1" min="1">
+                                </div> --}}
+                                <hr>
                         </div>
-                        <div class="card p-4">
-                            <input type="hidden" class="form-control" id="datetime" name="selecteddate" required />
 
-                            {{#if error}}
-                            <div style="color: red;">
-                                <strong>{{error}}</strong>
-                            </div>
-                            {{/if}}
-                            <hr>
-                            {{!-- <div class="form-check mb-2">
-                                <input class="form-check-input" type="radio" name="payment-method" value="COD" checked>
-                                <label class="form-check-label" for="darkRadio1">Booking (without payment)</label>
-                            </div> --}}
-                            <div class="form-check mb-2">
-                                <input class="form-check-input " type="radio" name="payment-method" value="ONLINE"
-                                    checked>
-                                <label class="form-check-label" for="darkRadio2">Pay & Book</label>
-                            </div>
+                        </h6>
+                    </div>
 
-                            <button class="btn btn-dark mt-3 w-100" type="submit">Book Now</button>
+                    <div class="card p-4">
+                        <input type="hidden" class="form-control" id="datetime" name="selecteddate" required />
+
+                        {{#if error}}
+                        <div style="color: red;">
+                            <strong>{{error}}</strong>
+                        </div>
+                        {{/if}}
+                        <hr>
+
+                        <div class="form-group">
+                            <label><b>Seats</b></label>
+                            <input class="form-control rounded-3 shadow-sm p-2" type="number" id="noseat" name="noseat"
+                                value="1" min="1" max="5" oninput="updateTotalPrice()" required>
+                        </div>
+                        {{!-- <div class="form-check mb-2">
+                            <input class="form-check-input" type="radio" name="payment-method" value="COD" checked>
+                            <label class="form-check-label" for="darkRadio1">Booking (without payment)</label>
+                        </div> --}}
+                        <div class="form-check mb-2">
+                            <input class="form-check-input " type="radio" name="payment-method" value="ONLINE" checked>
+                            <label class="form-check-label" for="darkRadio2">Pay & Book</label>
+                        </div>
+
+                        <button class="btn btn-dark mt-3 w-100" type="submit">Book Now</button>
             </form>
         </div>
     </div>
@@ -117,49 +115,62 @@
 </script>
 <script>
     function razorpayPayment(order) {
+        let seatCount = parseInt(document.getElementById("noseat").value) || 1;
+        let totalAmount = order.amount * seatCount; // Multiply by seat count
+
         var options = {
-            "key": "rzp_test_8NokNgt8cA3Hdv", // Enter the Key ID generated from the Dashboard
-            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "key": "rzp_test_8NokNgt8cA3Hdv",
+            "amount": totalAmount * 100, // Convert to paise
             "currency": "INR",
             "name": "SmartConnect",
-            "description": "Test Transaction",
+            "description": "Event Booking Payment",
             "image": "https://example.com/your_logo",
-            "order_id": order.id, //This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "order_id": order.id,
             "handler": function (response) {
-                verifyPayment(response, order)
+                verifyPayment(response, order, totalAmount);
             },
             "prefill": {
                 "name": "Shahala nushri",
                 "email": "shahalanushri9@gmail.com",
                 "contact": "8156867466"
             },
-            "notes": {
-                "address": "Razorpay Corporate Office"
-            },
             "theme": {
                 "color": "#3399cc"
             }
         }
         var rzp1 = new Razorpay(options);
-        rzp1.open()
+        rzp1.open();
     }
 
-    function verifyPayment(payment, order) {
+
+    function verifyPayment(payment, order, totalAmount) {
         $.ajax({
             url: '/verify-payment',
             data: {
                 payment,
-                order
+                order,
+                totalAmount
             },
             method: 'post',
             success: (response) => {
                 if (response.status) {
-                    location.href = '/order-placed'
+                    location.href = '/order-placed';
                 } else {
-                    alert("Payment failed")
+                    alert("Payment failed");
                 }
             }
-        })
+        });
+    }
+
+</script>
+
+<script>
+    function updateTotalPrice() {
+        let pricePerSeat = {{ event.Price }}; // Get event price from Handlebars
+    let seatCount = parseInt(document.getElementById("noseat").value) || 1;
+    let totalPrice = pricePerSeat * seatCount;
+
+    document.getElementById("total-price").innerText = totalPrice; // Update price in UI
     }
 </script>
 
@@ -217,4 +228,13 @@
     // Set default value to current date and time in 12-hour format with AM/PM
     const defaultDateTime = `${year}-${month}-${day}T${hours}:${minutes}`;
     document.getElementById('datetime').value = defaultDateTime;
+</script>
+
+<script>
+    function validateSeats(input) {
+        if (input.value > 5) {
+            input.value = 5; // Set max value to 5 if exceeded
+            alert("You can only book a maximum of 5 seats.");
+
+        }
 </script>

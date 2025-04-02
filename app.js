@@ -1,9 +1,6 @@
 var createError = require("http-errors");
 var express = require("express");
-
 const http = require("http");
-const socketIo = require("socket.io");
-
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -12,16 +9,34 @@ var usersRouter = require("./routes/users");
 var adminRouter = require("./routes/admin");
 var builderRouter = require("./routes/builder");
 var officerRouter = require("./routes/officer");
+const adminHelper = require("./helper/adminHelper");
+const cron = require("node-cron");
 
 var fileUpload = require("express-fileupload");
 var db = require("./config/connection");
 var session = require("express-session");
 const Handlebars = require('handlebars');
-
 const app = express();
-const server = http.createServer(app); // ✅ Attach HTTP server
-const io = socketIo(server, { cors: { origin: "*" } }); // ✅ Allow CORS
+const connectSocket = require("./socket/socket.io"); //14
 
+// Socket Config
+var server = http.createServer(app);
+
+// Socket Connection
+const io = connectSocket(server);
+
+// socket add in req.io middleware
+app.use(function (req, res, next) {
+  req.io = io;
+  next();
+});
+
+
+
+cron.schedule("0 0 * * *", async () => {
+  console.log("Running scheduled activity cleanup...");
+  await adminHelper.deleteExpiredActivities();
+});
 
 
 
@@ -33,14 +48,6 @@ app.set("view engine", "hbs");
 app.use((req, res, next) => {
   req.io = io;
   next();
-});
-
-// Handle Socket.io connections
-io.on("connection", (socket) => {
-  console.log("✅ A user connected: " + socket.id);
-  socket.on("disconnect", () => {
-    console.log("❌ User disconnected: " + socket.id);
-  });
 });
 
 Handlebars.registerHelper('eq', function (a, b) {
@@ -64,6 +71,9 @@ app.engine(
       },
       eq: function (a, b) {
         return a === b;
+      },
+      json: function (context) {
+        return JSON.stringify(context);
       },
       formatDate: function (dateString) {
         const date = new Date(dateString);
@@ -108,6 +118,7 @@ app.use("/officer", officerRouter);
 app.use("/admin/users", adminRouter);
 app.use("/admin/builder", adminRouter);
 app.use("/admin/officers", adminRouter);
+app.use("/admin/tempusers", adminRouter);
 
 
 // catch 404 and forward to error handler
@@ -126,4 +137,4 @@ app.use(function (err, req, res, next) {
   res.render("error");
 });
 
-module.exports = app;
+module.exports = { app, server };

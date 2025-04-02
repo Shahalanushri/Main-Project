@@ -16,5 +16,12 @@ module.exports = {
     ACTIVITY_COLLECTION: 'activities',
     GALLERY_COLLECTION: 'gallery',
     FACILITIE_BOOKINGS: 'bookings',
+    TEMPUSERS_COLLECTION: "temp-users",
+    MCONTACT_COLLECTION: "maintainence-contacts",
+    POLL_COLLECTION: "polls",
+    SURVEY_COLLECTION: "survey",
+    SURVEY_ANS_COLLECTION: "survey-answer",
+    POLL_ANS_COLLECTION: "poll-answer",
+    ADS_COLLECTION: "ads",
 
 }

@@ -1,0 +1,74 @@
+<div class="page-content-wrapper p-2 pt-4">
+    <div class="container">
+        <div class="card mt-5">
+            <div class="card-body">
+                <h5>Add New Poll</h5> <br>
+                <form id="pollForm" action="/add-poll" enctype="multipart/form-data" method="post"
+                    onsubmit="return validateOptions()">
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Poll Title</label>
+                        <input class="form-control" name="title" type="text" placeholder="Enter The Title" required>
+                    </div>
+
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Last Date</label>
+                        <input class="form-control" name="date" id="bookingDate" type="date"
+                            placeholder="Enter The Sub Title" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Poll Content</label>
+                        <input class="form-control" name="content" type="text" placeholder="Enter The Content" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="exampleInputText">Description</label>
+                        <input class="form-control" name="desc" type="text" placeholder="" required>
+                    </div>
+                    <hr>
+                    <h6>Options</h6>
+                    <hr>
+
+                    <div id="optionsContainer">
+                        <div class="form-group d-flex align-items-center option-item">
+                            <label class="form-label me-4">Option 1</label>
+                            <input class="form-control" name="options[]" type="text" required>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-primary mt-2 mb-5" type="button" onclick="addOption()">+ Add More
+                        Options</button>
+
+                    <button class="btn btn-primary w-100 d-flex align-items-center justify-content-center"
+                        type="submit">
+                        Add Poll
+                        <svg class="bi bi-arrow-right-short" width="24" height="24" viewBox="0 0 16 16"
+                            fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                d="M4 8a.5.5 0 0 1 .5-.5h5.793L8.146 5.354a.5.5 0 1 1 .708-.708l3 3a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708-.708L10.293 8.5H4.5A.5.5 0 0 1 4 8z">
+                            </path>
+                        </svg>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function addOption() {
+        let optionsContainer = document.getElementById("optionsContainer");
+        let optionCount = optionsContainer.children.length + 1;
+
+        let div = document.createElement("div");
+        div.className = "form-group d-flex align-items-center mt-2 option-item";
+
+        div.innerHTML = `
+            <label class="form-label me-4">Option ${optionCount}</label>
+            <input class="form-control" name="options[]" type="text" required>
+            <button class="btn btn-danger ms-2" type="button" onclick="removeOption(this)">-</button>
+        `;
+
+        optionsContainer.appendChild(div);
+    }
+</script>

@@ -1,4 +1,12 @@
 <style>
+    .login-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    background-color: #f4f4f4; /* Light background */
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
     .text-danger {
         font-size: 11px;
         margin-top: 5px;
@@ -6,15 +14,15 @@
 </style>
 
 <!-- Login Wrapper Area -->
-<div class="login-wrapper d-flex  align-items-center justify-content-center "style="background-color: #E4A11B;">
+<div class="login-wrapper d-flex  align-items-center justify-content-center ">
     <div class="custom-container">
         <div class="text-center px-4"><img class="login-intro-img" src="assets/img/bg-img/36.png" alt=""></div>
         <!-- Register Form -->
-        <h4 class="text-center mb-3"  style="color: white;"font-weight: 600>SmartConnect<span style="color: crimson;"></span></h4>
-        <div class="card shadow p-4" style="background-color: #E4A11B;">
+        <h4 class="text-center mb-3"  style="color: rgb(11, 10, 10);"font-weight: 600>SmartConnect<span style="color: crimson;"></span></h4>
+        <div class="card shadow p-4">
 
             <div class="register-form mt-4">
-                <h6 class="mb-4 text-center" style="color: white">Hey User, Welcome<br> To SmartConnect</h6>
+                <h6 class="mb-4 text-center" style="color: rgb(18, 17, 17)">Hey User, Welcome<br> To SmartConnect</h6>
                 {{#if signInErr}}
 
                 <p class="text-danger text-center ">{{signInErr}}</p>
@@ -86,7 +94,7 @@
                         </div>
                     </div>
 
-                    <button class="btn btn-light w-100" type="submit">Next</button>
+                    <button class="btn btn-dark w-100" type="submit">Next</button>
                     {{!-- <a href="/signin" class="btn btn-light w-100 mt-2" type="submit">Login</a> --}}
                 </form>
 

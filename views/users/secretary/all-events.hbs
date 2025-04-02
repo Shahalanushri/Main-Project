@@ -1,53 +1,34 @@
-<style>
-    .bg-overlay::after {
-        position: absolute;
-        content: '';
-        background-color: #000000b5;
-        opacity: 0.75;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 100%;
-        z-index: -1;
-    }
-
-    .cu-btn {
-        border-radius: 100px !important;
-    }
-
-    .about-img {
-        border-radius: 20px;
-    }
-
-    .ct-btn {
-        font-size: 11px;
-        border-radius: 50px;
-    }
-
-    .tiny-slider-one-wrapper .single-hero-slide {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        height: 200px !important;
-        background-position: center center;
-        background-size: cover;
-    }
-
-    .form-control.form-control-clicked {
-        background-color: hsl(0, 31%, 95%);
-        border-color: #c6c6c6;
-        color: #073984;
-    }
-</style>
-
 <div class="page-content-wrapper p-2 pt-4">
     <div class="">
         <div class="card">
             <div class="card-body">
                 <p>Manage Events</p>
                 <a href="/add-event" class="btn btn-dark btn-sm mb-4">+ Add Events</a>
-                <a href="/calender" class="btn btn-dark btn-sm mb-4">View Event Calender</a>
-                <div class="table-responsive">
+                {{!-- <a href="/calender" class="btn btn-dark btn-sm mb-4">View Event Calender</a> --}}
+
+                <div class="row">
+                    {{#each events}}
+                    <div class="col-12">
+                        <div class="card p-4 mb-4 shadow">
+                            <img src="/images/event-images/{{this._id}}.png" width="100px" class="mb-3" alt="">
+                            <br><b>{{this.title}}</b> <br>{{this.subtitle}} </br>
+                            <br><b>Date : </b>{{this.date}} <br>
+                            <b>Time Starts :</b> {{this.from}} <br>
+                            <b>Ends : </b>{{this.to}}
+                            </br>
+                            <br>{{this.venue}}</br>
+                            <br>{{this.seat}}</br>
+                            <td>Rs.{{this.Price}}/-</td>
+
+                            <td><a href="/delete-event/{{this._id}}" class="btn btn-danger mt-3">Delete</a></td>
+
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+
+
+                {{!-- <div class="table-responsive">
                     <table class="w-100" id="dataTable">
                         <thead>
                             <tr>
@@ -59,54 +40,52 @@
                                 <th>Ticket Price</th>
                                 <th>Manage</th>
 
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each events}}
-                            <tr>
-                                <td><img src="/images/event-images/{{this._id}}.png" width="50px" alt=""></td>
+                                <!-- Search Bar -->
+                                <div class="mb-3">
+                                    <input type="text" id="elementsSearchInput" class="form-control"
+                                        placeholder="Search events..." onkeyup="elementsSearch()">
+                                </div>
 
-                                <td><b>{{this.title}}</b> <br>{{this.subtitle}} </td>
-                                <td><b>Date : </b>{{this.date}} <br>
-                                    <b>Time Starts :</b> {{this.from}} <br>
-                                    <b>Ends : </b>{{this.to}}
-                                </td>
-                                <td>{{this.venue}}</td>
-                                <td>{{this.seat}}</td>
-                                <td>Rs.{{this.Price}}/-</td>
+                                <div class="row" id="elementsSearchList">
+                                    {{#each events}}
+                                    <div class="col-md-4 mb-3">
+                                        <div class="card">
+                                            <img src="/images/event-images/{{this._id}}.png" class="card-img-top"
+                                                alt="{{this.title}}" style="height: 200px; object-fit: cover;">
+                                            <div class="card-body">
+                                                <h5 class="card-title">{{this.title}}</h5>
+                                                <p class="card-text"><b>Venue:</b> {{this.venue}}</p>
+                                                <p class="card-text"><b>Date:</b> {{this.date}}</p>
+                                                <p class="card-text"><b>Time:</b> {{this.from}} - {{this.to}}</p>
+                                                <p class="card-text"><b>Seats Available:</b> {{this.seat}}</p>
+                                                <p class="card-text"><b>Price:</b> Rs.{{this.Price}}/-</p>
 
-                                <td><a href="/delete-facilitie/{{this._id}}" class="btn btn-danger">Delete</a></td>
+                                                <td><a href="/delete-facilitie/{{this._id}}"
+                                                        class="btn btn-danger">Delete</a></td>
                             </tr>
                             {{/each}}
-                        </tbody>
+                            </tbody>
                     </table>
-                </div>
+                </div> --}}
             </div>
+
         </div>
     </div>
 </div>
 
-
+<!-- JavaScript for Search Functionality -->
 <script>
     function elementsSearch() {
-        var input = document.getElementById('elementsSearchInput');
-        var filter = input.value.toUpperCase();
-        var list = document.getElementById("elementsSearchList");
-        var listItem = list.getElementsByClassName('col-4');
+        var input = document.getElementById('elementsSearchInput').value.toUpperCase();
+        var cards = document.getElementById("elementsSearchList").getElementsByClassName("col-md-4");
 
-        for (i = 0; i < listItem.length; i++) {
-            var a = listItem[i];
-            var textValue = a.textContent || a.innerText;
-            if (textValue.toUpperCase().indexOf(filter) > -1) {
-                listItem[i].style.display = "";
+        for (var i = 0; i < cards.length; i++) {
+            var title = cards[i].querySelector(".card-title").innerText.toUpperCase();
+            if (title.indexOf(input) > -1) {
+                cards[i].style.display = "";
             } else {
-                listItem[i].style.display = "none";
+                cards[i].style.display = "none";
             }
         }
     }
-
 </script>
-
-
-
-</div>

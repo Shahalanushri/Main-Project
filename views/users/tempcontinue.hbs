@@ -1,0 +1,118 @@
+<!-- Login Wrapper Area -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Complete Your Profile</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <style>
+        /* Page background */
+        .login-wrapper {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgb(234, 234, 234);
+            /* Light blue background */
+            padding: 20px;
+        }
+
+        /* Form card */
+        .card {
+            background: #ffffff;
+            /* Pure white card */
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0px 6px 18px rgba(0, 0, 0, 0.1);
+            /* Soft shadow */
+            width: 100%;
+            max-width: 420px;
+        }
+
+        /* Form elements */
+        .form-group label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-control {
+            border-radius: 8px;
+            border: 1px solid #b0bec5;
+            /* Light gray border */
+            padding: 10px;
+        }
+
+        /* Submit button */
+        .btn-dark {
+            background: linear-gradient(135deg, #1565c0, #42a5f5);
+            /* Modern blue gradient */
+            border: none;
+            font-weight: bold;
+            padding: 12px;
+            border-radius: 8px;
+            transition: all 0.3s ease-in-out;
+            color: white;
+        }
+
+        /* Hover effect */
+        .btn-dark:hover {
+            background: linear-gradient(135deg, #0d47a1, #2196f3);
+            transform: translateY(-2px);
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="login-wrapper">
+        <div class="card">
+            <div class="register-form">
+                <h4 class="mb-4 text-center" style="font-weight: bold;">🚀 Complete Your Profile</h4>
+
+                {{#if user}}
+                <form action="/tempcontinue/{{userProfile._id}}" method="POST" enctype="multipart/form-data">
+
+                    <input class="form-control" type="hidden" name="Fname" value="{{userProfile.Fname}}" required>
+                    <input class="form-control" type="hidden" name="Lname" value="{{userProfile.Lname}}" required>
+                    <input class="form-control" type="hidden" name="Email" value="{{userProfile.Email}}" required>
+
+                    <div class="form-group mb-3">
+                        <label>📞 Phone Number</label>
+                        <input class="form-control" type="number" name="Phone" value="{{Phone}}" required>
+                    </div>
+
+                    <div class="form-group mb-3">
+                        <label>🏠 Address</label>
+                        <textarea class="form-control" name="Address" placeholder="Enter your full address..."
+                            required>{{Address}}</textarea>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-7">
+                            <div class="form-group mb-3">
+                                <label>📍 City</label>
+                                <input class="form-control" type="text" name="District" value="Meppadi" readonly>
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="form-group mb-3">
+                                <label>📮 Pincode</label>
+                                <input class="form-control" type="number" name="Pincode" value="673577" readonly>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn mt-3 w-100 btn-dark">Continue</button>
+                </form>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>

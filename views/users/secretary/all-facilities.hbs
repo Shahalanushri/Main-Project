@@ -1,106 +1,72 @@
 <style>
-    .bg-overlay::after {
-        position: absolute;
-        content: '';
-        background-color: #000000b5;
-        opacity: 0.75;
-        top: 0;
-        left: 0;
-        height: 100%;
+    .facility-card {
+        border-radius: 15px;
+        overflow: hidden;
+        transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+    }
+
+    .facility-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .facility-img {
         width: 100%;
-        z-index: -1;
+        height: 150px;
+        object-fit: cover;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
     }
 
-    .cu-btn {
-        border-radius: 100px !important;
+    .facility-title {
+        font-weight: bold;
+        font-size: 1.1rem;
     }
 
-    .about-img {
+    .facility-subtitle {
+        color: #6c757d;
+        font-size: 0.9rem;
+    }
+
+    .availability-badge {
+        font-size: 0.85rem;
+        padding: 5px 10px;
         border-radius: 20px;
     }
 
-    .ct-btn {
-        font-size: 11px;
-        border-radius: 50px;
+    .available {
+        background-color: #28a745;
+        color: white;
     }
 
-    .tiny-slider-one-wrapper .single-hero-slide {
-        position: relative;
-        z-index: 1;
-        width: 100%;
-        height: 200px !important;
-        background-position: center center;
-        background-size: cover;
-    }
-
-    .form-control.form-control-clicked {
-        background-color: hsl(0, 31%, 95%);
-        border-color: #c6c6c6;
-        color: #073984;
+    .unavailable {
+        background-color: #dc3545;
+        color: white;
     }
 </style>
 
 <div class="page-content-wrapper p-2 pt-4">
     <div class="container">
-        <div class="card">
-            <div class="card-body">
-                <p>Manage Facilities</p>
-                <a href="/add-facilities" class="btn btn-dark btn-sm mb-4">+ Add Facilities</a>
-                <div class="table-responsive">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5 class="mb-0">Manage Facilities</h5>
+            <a href="/add-facilities" class="btn btn-dark btn-sm">+ Add Facility</a>
+        </div>
 
-                    <table class="w-100" id="dataTable">
-                        <thead>
-                            <tr>
-                                <th>Image</th>
-                                <th>Facilitie Title</th>
-                                <th>Availability</th>
-                                <th>Price</th>
-
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {{#each facilities}}
-                            <tr>
-                                <td><img src="/images/facilitie-images/{{this._id}}.png" width="50px" alt=""></td>
-
-                                <td>{{this.title}} <br>{{this.subtitle}} </td>
-                                <td>{{this.availability}} </td>
-                                <td>{{this.Price}}/- </td>
-
-                                {{!-- <td><a href="/delete-facilitie/{{this._id}}" class="btn btn-danger">Delete</a>
-                                </td> --}}
-                            </tr>
-                            {{/each}}
-                        </tbody>
-                    </table>
+        <div class="row">
+            {{#each facilities}}
+            <div class="col-md-4 col-sm-6 mb-4">
+                <div class="card facility-card shadow-sm">
+                    <img src="/images/facilitie-images/{{this._id}}.png" class="facility-img" alt="Facility Image">
+                    <div class="card-body text-center">
+                        <p class="facility-title">{{this.title}}</p>
+                        <p class="facility-subtitle">{{this.subtitle}}</p>
+                        <span class="availability-badge {{#if this.availability}} available {{else}} unavailable {{/if}}">
+                            {{#if this.availability}} Available {{else}} Unavailable {{/if}}
+                        </span>
+                    </div>
                 </div>
-
             </div>
+            {{/each}}
         </div>
     </div>
-</div>
-
-
-<script>
-    function elementsSearch() {
-        var input = document.getElementById('elementsSearchInput');
-        var filter = input.value.toUpperCase();
-        var list = document.getElementById("elementsSearchList");
-        var listItem = list.getElementsByClassName('col-4');
-
-        for (i = 0; i < listItem.length; i++) {
-            var a = listItem[i];
-            var textValue = a.textContent || a.innerText;
-            if (textValue.toUpperCase().indexOf(filter) > -1) {
-                listItem[i].style.display = "";
-            } else {
-                listItem[i].style.display = "none";
-            }
-        }
-    }
-
-</script>
-
-
-
 </div>

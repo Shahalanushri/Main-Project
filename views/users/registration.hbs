@@ -1,0 +1,170 @@
+<style>
+    .bg-overlay::after {
+        position: absolute;
+        content: '';
+        background-color: #000000b5;
+        opacity: 0.75;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        z-index: -1;
+    }
+
+    .cu-btn {
+        border-radius: 100px !important;
+    }
+
+    .about-img {
+        border-radius: 20px;
+    }
+
+    .ct-btn {
+        font-size: 11px;
+        border-radius: 50px;
+    }
+
+    .tiny-slider-one-wrapper .single-hero-slide {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 200px !important;
+        background-position: center center;
+        background-size: cover;
+    }
+
+    .form-control.form-control-clicked {
+        background-color: hsl(0, 31%, 95%);
+        border-color: #c6c6c6;
+        color: #073984;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<div class="page-content-wrapper">
+
+    <div class="container pt-5 mb-3">
+        <h4>Resident Registration Transactions</h4>
+        <div class="container">
+            <br>
+            <div class="card p-3">
+
+                <h5>Total Registration Fee Collected : {{grandTotal}}/-</h5>
+            </div>
+
+            <br>
+            <div class="card">
+                <div class="card-body">
+                    <h4>Filter Payments</h4>
+                    <form id="filterForm">
+                        <label for="fromDate">From:</label>
+                        <input type="date" class="form-control" id="fromDate" name="fromDate">
+
+                        <label for="toDate">To:</label>
+                        <input type="date" class="form-control" id="toDate" name="toDate">
+
+                        <button class="btn btn-dark btn-sm mt-3" type="submit">Filter</button>
+                        <a class="btn btn-danger btn-sm mt-3" href="/registration">Clear</a>
+
+                    </form>
+                    <button class="btn btn-primary btn-sm mt-3 w-100" onclick="window.print();">Generate Report</button>
+
+                    <br> <br>
+                    <p>Track Payments</p>
+                    <table class="w-100" id="dataTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Resident Name</th>
+                                <th>Payment</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{#each users}}
+                            <tr>
+                                <td>{{formatDate this.createdAt}}</td>
+                                <td>{{this.Fname}} {{this.Lname}}</td>
+                                <td class="text-success">Rs.{{this.amount}}/-</td>
+                            </tr>
+                            {{/each}}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+            <br>
+            <!-- Chart.js Script -->
+            <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+            {{!--
+            <script>
+                document.getElementById("filterForm").addEventListener("submit", function (e) {
+                    e.preventDefault();
+
+                    const fromDate = document.getElementById("fromDate").value;
+                    const toDate = document.getElementById("toDate").value;
+
+                    if (!fromDate || !toDate) {
+                        alert("Please select both dates.");
+                        return;
+                    }
+
+                    window.location.href = `/registration?fromDate=${fromDate}&toDate=${toDate}`;
+                });
+
+                // Pie Chart Data
+                document.addEventListener("DOMContentLoaded", function () {
+                    const payments = {{{ json payments }
+                }};
+
+                const labels = payments.map(p => p._id); // Dates
+                const data = payments.map(p => p.totalAmount); // Total payment per date
+
+                const ctx = document.getElementById("paymentChart").getContext("2d");
+                new Chart(ctx, {
+                    type: "pie",
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: "Total Payments",
+                            data: data,
+                            backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56", "#4BC0C0", "#9966FF", "#FF9F40"],
+                            hoverOffset: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: "bottom"
+                            }
+                        }
+                    }
+                });
+    });
+            </script> --}}
+            <script>
+                function elementsSearch() {
+                    var input = document.getElementById('elementsSearchInput');
+                    var filter = input.value.toUpperCase();
+                    var list = document.getElementById("elementsSearchList");
+                    var listItem = list.getElementsByClassName('col-4');
+
+                    for (i = 0; i < listItem.length; i++) {
+                        var a = listItem[i];
+                        var textValue = a.textContent || a.innerText;
+                        if (textValue.toUpperCase().indexOf(filter) > -1) {
+                            listItem[i].style.display = "";
+                        } else {
+                            listItem[i].style.display = "none";
+                        }
+                    }
+                }
+
+            </script>
+
+
+
+        </div>

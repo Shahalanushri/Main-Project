@@ -1,0 +1,156 @@
+<!-- Add Font Awesome for Icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background-color: #f8f9fa;
+    }
+
+    .container {
+        max-width: 900px;
+    }
+
+    .card {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        background: white;
+        padding: 20px;
+    }
+
+    .contact-card {
+        border-radius: 12px;
+        transition: all 0.3s ease-in-out;
+        border: none;
+        background: white;
+        box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+    }
+
+    .contact-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0px 6px 14px rgba(0, 0, 0, 0.15);
+    }
+
+    .contact-icon {
+        font-size: 22px;
+        color: white;
+        padding: 12px;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .contact-type-phone {
+        background-color: #28a745;
+    }
+
+    .contact-type-email {
+        background-color: #007bff;
+    }
+
+    .contact-type-other {
+        background-color: #6c757d;
+    }
+
+    .contact-card .btn-danger {
+        border-radius: 8px;
+        transition: 0.3s ease;
+    }
+
+    .contact-card .btn-danger:hover {
+        background-color: #dc3545;
+        transform: scale(1.05);
+    }
+
+    .btn-dark {
+        border-radius: 8px;
+        font-weight: 500;
+        transition: all 0.3s ease;
+    }
+
+    .btn-dark:hover {
+        background: #343a40;
+        transform: scale(1.05);
+    }
+
+    .alert {
+        border-radius: 10px;
+        padding: 15px;
+        background: #ffe5e5;
+        color: #b71c1c;
+        font-weight: 500;
+    }
+</style>
+
+<div class="page-content-wrapper p-3">
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-3">📞 Manage Maintenance Contacts</h4>
+                <a href="/add-mcontact" class="btn btn-dark btn-sm mb-4"><i class="fa-solid fa-plus"></i> Add
+                    Contact</a>
+
+                {{#if mcontacts.length}}
+                <div class="row">
+                    {{#each mcontacts}}
+                    <div class="col-md-6 mb-3">
+                        <div class="card contact-card p-3">
+                            <div class="d-flex align-items-center">
+                                <div class="contact-icon 
+                                    {{#if (eq this.type 'Phone')}} contact-type-phone 
+                                    {{else if (eq this.type 'Email')}} contact-type-email 
+                                    {{else}} contact-type-other {{/if}}">
+                                    <i class="{{#if (eq this.type 'Phone')}} fa-solid fa-phone 
+                                       {{else if (eq this.type 'Email')}} fa-solid fa-envelope 
+                                       {{else}} fa-solid fa-user {{/if}}"></i>
+                                </div>
+                                <div class="ms-3">
+                                    <h6 class="mb-0">{{this.name}}</h6>
+                                    <p class="text-muted mb-1">{{this.type}}</p>
+                                    <p class="mb-0"><strong>{{this.info}}</strong></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <a href="javascript:void(0);" onclick="deleteContact('{{this._id}}')"
+                                class="btn btn-danger btn-sm w-100">
+                                <i class="fa-solid fa-trash"></i> Delete
+                            </a>
+                        </div>
+                    </div>
+                    {{/each}}
+                </div>
+                {{else}}
+                <div class="alert text-center">
+                    <h5 class="alert-heading">🚨 No Maintenance Contacts Found</h5>
+                    <p class="mb-0">Add a maintenance contact to manage them here.</p>
+                </div>
+                {{/if}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function deleteContact(contactId) {
+        if (confirm("Are you sure you want to delete this contact?")) {
+            fetch(`/delete-mcontact/${contactId}`, { method: 'GET' })
+                .then(response => {
+                    if (response.ok) {
+                        location.reload(); // Reload the page after successful delete
+                    } else {
+                        alert("❌ Failed to delete contact.");
+                    }
+                })
+                .catch(error => console.error("Error:", error));
+        }
+    }
+</script>
+
+<!-- FontAwesome Icons -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/js/all.min.js"></script>

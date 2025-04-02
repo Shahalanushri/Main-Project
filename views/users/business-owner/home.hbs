@@ -1,0 +1,137 @@
+<style>
+    .bg-overlay::after {
+        position: absolute;
+        content: '';
+        background-color: #000000b5;
+        opacity: 0.75;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 100%;
+        z-index: -1;
+    }
+
+    .cu-btn {
+        border-radius: 100px !important;
+    }
+
+    .about-img {
+        border-radius: 20px;
+    }
+
+    .ct-btn {
+        font-size: 11px;
+        border-radius: 50px;
+    }
+
+    .tiny-slider-one-wrapper .single-hero-slide {
+        position: relative;
+        z-index: 1;
+        width: 100%;
+        height: 200px !important;
+        background-position: center center;
+        background-size: cover;
+    }
+
+    .form-control.form-control-clicked {
+        background-color: hsl(0, 31%, 95%);
+        border-color: #c6c6c6;
+        color: #073984;
+    }
+</style>
+
+<div class="page-content-wrapper">
+    <!-- Welcome Toast -->
+    {{!-- <div class="toast toast-autohide custom-toast-1 toast-success home-page-toast" role="alert"
+        aria-live="assertive" aria-atomic="true" data-bs-delay="7000" data-bs-autohide="true">
+        <div class="toast-body">
+            <svg class="bi bi-bookmark-check text-white" width="30" height="30" viewBox="0 0 16 16" fill="currentColor"
+                xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                    d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z">
+                </path>
+                <path fill-rule="evenodd"
+                    d="M10.854 5.146a.5.5 0 0 1 0 .708l-3 3a.5.5 0 0 1-.708 0l-1.5-1.5a.5.5 0 1 1 .708-.708L7.5 7.793l2.646-2.647a.5.5 0 0 1 .708 0z">
+                </path>
+            </svg>
+            {{#if user}}
+            <div class="toast-text ms-3 me-2">
+                <p class="mb-1 text-white">Welcome {{user.Fname}}!</p><small class="d-block">Now you can enjoy our every
+                    features</small>
+
+            </div>
+            {{else}}
+            <div class="toast-text ms-3 me-2">
+                <p class="mb-1 text-white">Welcome to SmartConnect</p><small class="d-block">Please Register/Login to
+                    continue with our smartconect
+                </small>
+                <a href="/usertype" class="btn btn-dark btn-sm mt-2 w-50">Signin</a>
+            </div>
+            {{/if}}
+
+        </div>
+        <button class="btn btn-close btn-close-white position-absolute p-1" type="button" data-bs-dismiss="toast"
+            aria-label="Close"></button>
+    </div> --}}
+    <!-- Tiny Slider One Wrapper -->
+    {{!-- <div class="tiny-slider-one-wrapper p-3 pt-5 pb-0">
+        <div class="tiny-slider-one">
+            <!-- Single Hero Slide -->
+            <div>
+                <div class="single-hero-slide bg-overlay" style="background-image: url('/images/img/community.jpeg')">
+                    <div class="h-100 d-flex align-items-center text-center">
+                        <div class="container">
+                            <h3 class="text-white mb-1">Welcome To SmartConnect</h3>
+                            <p class="text-white mb-4">Your Space. Your Success.</p><a
+                                class="btn btn-creative btn-warning btn-lg cu-btn" href="#below">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Single Hero Slide -->
+
+        </div>
+    </div> --}}
+    <div class="container pt-5">
+        <h4>Welcome to Business Hub</h4>
+    </div>
+    <div class="pt-3 pb-4"></div>
+    <div class="container-lg">
+        <h6>Manage Your Products</h6>
+        <a href="/all-products" class="btn btn-dark">All Products</a>
+        <a href="/add-product" class="btn btn-dark">+ Add New Product</a>
+        <br>
+        <hr>
+        <h6>Manage Your Ads</h6>
+
+        <a href="/all-ads" class="btn btn-dark">All Ads</a>
+
+        <a href="/add-ad" class="btn btn-dark">+ Add New Ad</a>
+
+    </div>
+</div>
+
+
+<script>
+    function elementsSearch() {
+        var input = document.getElementById('elementsSearchInput');
+        var filter = input.value.toUpperCase();
+        var list = document.getElementById("elementsSearchList");
+        var listItem = list.getElementsByClassName('col-4');
+
+        for (i = 0; i < listItem.length; i++) {
+            var a = listItem[i];
+            var textValue = a.textContent || a.innerText;
+            if (textValue.toUpperCase().indexOf(filter) > -1) {
+                listItem[i].style.display = "";
+            } else {
+                listItem[i].style.display = "none";
+            }
+        }
+    }
+
+</script>
+
+
+
+</div>
